@@ -31,6 +31,7 @@ DEFAULT_MIGRATION_LIST = [
     'cloudferry.lib.os.migrate.keystone.TenantMigrationFlowFactory',
     'cloudferry.lib.os.migrate.glance.ImageMigrationFlowFactory',
     'cloudferry.lib.os.migrate.glance.ImageMemberMigrationFlowFactory',
+    'cloudferry.lib.os.migrate.cinder.VolumeMigrationFlowFactory',
 ]
 DEFAULT_DISCOVERER_LIST = [
     'cloudferry.lib.os.discovery.node.ComputeNodeDiscoverer',

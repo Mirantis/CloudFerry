@@ -1,0 +1,74 @@
+#!/sbin/openrc-run
+
+DOT_SSH_DIR=/root/.ssh
+METADATA_ROOT=/var/lib/cloud
+METADATA_JSON="${METADATA_ROOT}/openstack/latest/meta_data.json"
+
+depend() {
+	need fsck root
+}
+
+import_keys() {
+	local metadata=${1}
+	local keys="${DOT_SSH_DIR}/authorized_keys"
+	mkdir -m 700 -p ${DOT_SSH_DIR}
+
+	if [ "$(jq -r ".keys" "${metadata}")" != "null" ]; then
+		jq -r ".keys[].data" "${metadata}" > "${keys}"
+		chmod 644 "${keys}"
+	fi
+
+	if [ "$(jq -r ".meta.access_key" "${metadata}")" != "null" ]; then
+		local key=$(jq -r ".meta.access_key" "${metadata}")
+		echo "ssh-rsa ${key}" >> "${keys}"
+		chmod 644 "${keys}"
+	fi
+}
+
+set_hostname() {
+	local metadata="${1}"
+	local fqdn="$(jq -r ".hostname" "${metadata}")"
+	local hostname="${fqdn%%.*}"
+	local domain="${fqdn#*.}"
+
+	if [ -n "${hostname}" ]; then
+		/sbin/setup-hostname "${hostname}"
+		echo "127.0.0.1 ${hostname} ${fqdn}" >> /etc/hosts
+	fi
+}
+
+mount_config_drive() {
+	local info="$(blkid | grep LABEL=\"config-2\")"
+	local device="$(echo "${info}" | cut -d: -f1)"
+	local type="$(echo "${info}" | grep -o TYPE=\".*\" | cut -d\" -f2)"
+	if [ -z "${device}" ] || [ -z "${type}" ]; then
+		return 1
+	fi
+
+	if ! [ -b "${device}" ]; then
+		return 1
+	fi
+
+	mkdir -p "${METADATA_ROOT}"
+	mount -t "${type}" "${device}" "${METADATA_ROOT}"
+	return $?
+}
+
+start() {
+	for i in $(seq 10); do
+		if mount_config_drive; then
+			import_keys "${METADATA_JSON}"
+			set_hostname "${METADATA_JSON}"
+			return 0
+		else
+			sleep 3
+		fi
+	done
+
+	return 1
+}
+
+stop() {
+	umount "${METADATA_ROOT}"
+	return $?
+}

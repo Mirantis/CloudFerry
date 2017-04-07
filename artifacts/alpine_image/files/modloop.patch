@@ -1,0 +1,21 @@
+--- /mnt/etc/init.d/modloop
++++ /mnt/etc/init.d/modloop
+@@ -20,7 +20,7 @@
+ }
+ 
+ mountdirs() {
+-	awk '$2 !~ /^\/(sys|proc|dev|run)/ && $2 != "/" {print $2}' /proc/mounts
++	awk '$2 !~ /^\/(sys|proc|dev|run)/ {print $2}' /proc/mounts
+ }
+ 
+ find_modloop() {
+@@ -59,6 +59,9 @@
+ 			;;
+ 		*)
+ 			for dir in $(mountdirs); do
++				if [ "$dir" == "/" ]; then
++					dir=
++				fi
+ 				if [ -f "$dir"/$KOPT_modloop ]; then
+ 					modloop="$dir/${KOPT_modloop##/}"
+ 					alpine_mnt="$dir"

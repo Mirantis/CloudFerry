@@ -24,6 +24,7 @@ class Abc(bases.Hashable, bases.Representable):
         self.b = b
         self.c = c
 
+
 abc_qualname = bases.utils.qualname(Abc)
 
 

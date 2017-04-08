@@ -1,0 +1,28 @@
+language: python
+
+install:
+  - pip install tox
+
+env:
+  - TOXENV=pep8
+  - TOXENV=py27
+
+script:
+  - tox
+
+matrix:
+  include:
+    - python: "2.7"
+      install:
+        - pip install tox
+        - pip install coveralls
+      env: TOXENV=cover
+      after_success: coveralls
+
+deploy:
+  provider: pypi
+  user: workloadmobility@mirantis.com
+  password:
+    secure: PpDcbqhCw5HpzqlbHztu7jVl7EKEZfb5gMQ9XXxYwV3bJ4UxveU/CT2D4ui8+y7Vp4K7VXxAtbisfZcsh2Y53g0rT3FyV5SjB4xZkEeES0hdJ1fBxU0mm9m5vYgYGXi9mBiWLgiu+BLL7bFQmIuKfSLxB7xMieYm62wBJL42Ad1qp5WQL1fUSPgyRRRUKwoTw08R7TEUW4JszKNiYQILrgwSEpI3/5Shk8z05GqaZJnvcNZaTxrQNV2Uroljw/voVSYGU2nR5/csX9lv7WUl49tztDlFRdmSZytjQHdddoHngMso7bMOBMAqpkWmj4+tYd/R+J8JryGMudwi7YdaG00mmLNjgpSgdVnGnT1cxx1cjGAlKFMaZT5U3R8RvbP7sqA+3Fs1M7415ub3QHekp6Hm67yhtev1EwB/aP7ZOs53RXPvdi3M4XzhmyyPcVga09KI2CR0uG7MKKTyCnA6vzZmgWfsoQypc9t2tDcUzGfjw6VSynSDVLXsNJTwWieBcbcr7YMlcBpdD+tvuKrsrqsCjJ38OzQ/58psAH4nF30j5nGvMtuQT2IrwARXKfajp8puDBs5a9tQFrYFKXF0v5I9pVOD6qqR6NYsGkvP05TEkTFqc7f24MxtFBOrmewcxErH61ClXml6WdP1UQOwjVJ3tjFnbSLYFUBPJYj+k34=
+  on:
+    tags: true

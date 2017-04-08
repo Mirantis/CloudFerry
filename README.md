@@ -1,6 +1,9 @@
 ﻿CloudFerry
 ==========
 
+[![Build Status](https://travis-ci.org/Mirantis/CloudFerry.svg?branch=master)](https://travis-ci.org/Mirantis/CloudFerry)
+[![Coverage Status](https://coveralls.io/repos/github/Mirantis/CloudFerry/badge.svg?branch=master)](https://coveralls.io/github/Mirantis/CloudFerry?branch=master)
+
 # Overview
 
 CloudFerry is a tool for resources and workloads migration between two 

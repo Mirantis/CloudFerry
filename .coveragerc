@@ -1,0 +1,10 @@
+[run]
+branch = True
+source = kbackend
+
+[report]
+ignore_errors = True
+precision = 3
+
+[html]
+directory = .test_result/cover

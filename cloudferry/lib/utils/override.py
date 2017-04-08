@@ -100,6 +100,10 @@ class AttributeOverrides(object):
     @classmethod
     def from_stream(cls, stream, object_type):
         data = yaml.load(stream)
+
+        if data is None:
+            return cls.zero()
+
         if not isinstance(data, dict):
             raise TypeError('%s root object must be dictionary!' %
                             (get_filename_from_stream(stream),))

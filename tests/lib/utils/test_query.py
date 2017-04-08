@@ -23,6 +23,7 @@ class TestMode(model.Model):
     field1 = model.String()
     field2 = model.String()
 
+
 CLASS_FQN = TestMode.__module__ + '.' + TestMode.__name__
 
 

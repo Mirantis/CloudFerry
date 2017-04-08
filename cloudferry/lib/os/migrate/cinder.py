@@ -579,7 +579,8 @@ class FindOrCreateFlavor(BaseSymmetricSingletonTask):
                 flavor = self._create_flavor()
                 self.destructor = FlavorDestructor(
                     self.location, flavor.flavor_id, flavor.object_id)
-            return {self.var_name: flavor, self.destructor_var: self.destructor}
+            return {self.var_name: flavor,
+                    self.destructor_var: self.destructor}
 
     def _find_existing_flavor(self, session):
         for flavor in session.list(compute.Flavor, self.cloud):

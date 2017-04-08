@@ -240,6 +240,7 @@ class DataCollector(object):
         with pkg_resources.resource_stream(__name__, file_name) as f:
             yaml.dump(utils.convert(data), f, default_flow_style=False)
 
+
 if __name__ == '__main__':
     rollback = DataCollector(cfg)
     rollback.dump_data()

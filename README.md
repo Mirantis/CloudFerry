@@ -3,6 +3,7 @@
 
 [![Build Status](https://travis-ci.org/Mirantis/CloudFerry.svg?branch=master)](https://travis-ci.org/Mirantis/CloudFerry)
 [![Coverage Status](https://coveralls.io/repos/github/Mirantis/CloudFerry/badge.svg?branch=master)](https://coveralls.io/github/Mirantis/CloudFerry?branch=master)
+[![PyPI version](https://badge.fury.io/py/CloudFerry.svg)](https://badge.fury.io/py/CloudFerry)
 
 # Overview
 

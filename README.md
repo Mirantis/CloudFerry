@@ -101,7 +101,7 @@ python package by pip.
     ```
     virtualenv .venv
     source .venv/bin/activate
-    pip install git+git://github.com/MirantisWorkloadMobility/CloudFerry.git
+    pip install git+git://github.com/Mirantis/CloudFerry.git
     ```
 
 ## Installation with docker

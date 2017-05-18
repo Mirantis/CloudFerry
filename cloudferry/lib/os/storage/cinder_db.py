@@ -64,7 +64,7 @@ class CinderDBBroker(object):
 
     def _update_table(self, sql, old_id, parameters):
         sql = sql.format(', '.join('{0} = :{0}'.format(k)
-                                   for k in parameters.keys()))
+                                   for k in list(parameters.keys())))
         parameters['old_id'] = old_id
         self.mysql.execute(sql, **parameters)
 
@@ -85,10 +85,10 @@ class CinderDBBroker(object):
                                      "WHERE id = :old_id",
                                      old_id=old_id).fetchone()
             parameters = {'id': new_id}
-            parameters.update({k: v for k, v in row.items() if k != 'id'})
+            parameters.update({k: v for k, v in list(row.items()) if k != 'id'})
             insert = "INSERT INTO volumes ({}) VALUES ({})".format(
-                ', '.join(parameters.keys()),
-                ', '.join(':{}'.format(k) for k in parameters.keys())
+                ', '.join(list(parameters.keys())),
+                ', '.join(':{}'.format(k) for k in list(parameters.keys()))
             )
             self.mysql.execute(insert, **parameters)
 

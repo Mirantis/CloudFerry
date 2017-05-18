@@ -105,28 +105,28 @@ class NovaResourceMigrationTests(functional_test.FunctionalTest):
                 qs[t.name.lower()] = {'nova_q': {}, 'neutron_q': {},
                                       'cinder_q': {}}
                 nova_quota = client.novaclient.quotas.get(t.id).to_dict()
-                for k, v in nova_quota.iteritems():
+                for k, v in nova_quota.items():
                     if k in src_nova_quota_keys and k != 'id':
                         qs[t.name.lower()]['nova_q'][k] = v
                 neutron_quota = client.neutronclient.show_quota(t.id)['quota']
-                for k, v in neutron_quota.iteritems():
+                for k, v in neutron_quota.items():
                     if k in src_neutron_quota_keys:
                         qs[t.name.lower()]['neutron_q'][k] = v
                 cinder_quota = getattr(client.cinderclient.quotas.get(t.id),
                                        '_info')
-                for k, v in cinder_quota.iteritems():
+                for k, v in cinder_quota.items():
                     if k in cinder_quota_keys and k != 'id':
                         qs[t.name.lower()]['cinder_q'][k] = v
             return qs
 
-        src_nova_quota_keys = self.src_cloud.novaclient.quotas.get(
-            self.src_cloud.keystoneclient.tenant_id).to_dict().keys()
-        src_neutron_quota_keys = self.src_cloud.neutronclient.show_quota(
-            self.src_cloud.keystoneclient.tenant_id)['quota'].keys()
-        src_cinder_q_keys = getattr(self.src_cloud.cinderclient.quotas.get(
-            self.src_cloud.keystoneclient.tenant_id), '_info').keys()
-        dst_cinder_q_keys = getattr(self.dst_cloud.cinderclient.quotas.get(
-            self.dst_cloud.keystoneclient.tenant_id), '_info').keys()
+        src_nova_quota_keys = list(self.src_cloud.novaclient.quotas.get(
+            self.src_cloud.keystoneclient.tenant_id).to_dict().keys())
+        src_neutron_quota_keys = list(self.src_cloud.neutronclient.show_quota(
+            self.src_cloud.keystoneclient.tenant_id)['quota'].keys())
+        src_cinder_q_keys = list(getattr(self.src_cloud.cinderclient.quotas.get(
+            self.src_cloud.keystoneclient.tenant_id), '_info').keys())
+        dst_cinder_q_keys = list(getattr(self.dst_cloud.cinderclient.quotas.get(
+            self.dst_cloud.keystoneclient.tenant_id), '_info').keys())
         cinder_quota_keys = set(src_cinder_q_keys) & set(dst_cinder_q_keys)
 
         src_quotas = get_tenant_quotas(self.filter_tenants(), self.src_cloud)
@@ -170,7 +170,7 @@ class NovaResourceMigrationTests(functional_test.FunctionalTest):
                 qs[u.name.lower()] = {'nova_q': {}}
                 nova_quota = client.novaclient.quotas.get(u.tenantId,
                                                           u.id).to_dict()
-                for k, v in nova_quota.iteritems():
+                for k, v in nova_quota.items():
                     if k in src_nova_quota_keys and k != 'id':
                         qs[u.name.lower()]['nova_q'][k] = v
             return qs
@@ -179,8 +179,8 @@ class NovaResourceMigrationTests(functional_test.FunctionalTest):
             self.skipTest('Grizzly release does not support custom nova quotas'
                           ' for users')
 
-        src_nova_quota_keys = self.src_cloud.novaclient.quotas.get(
-            self.src_cloud.keystoneclient.tenant_id).to_dict().keys()
+        src_nova_quota_keys = list(self.src_cloud.novaclient.quotas.get(
+            self.src_cloud.keystoneclient.tenant_id).to_dict().keys())
 
         src_quotas = get_user_quotas(self.filter_users(), self.src_cloud)
         users_names = [user['name'] for user in config.users]

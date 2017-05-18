@@ -21,7 +21,7 @@ class Group(object):
             This classmethod creates tree of groups recursively
         """
         groups_list = []
-        for group_name, group_data in data.items():
+        for group_name, group_data in list(data.items()):
             group = cls(group_name)
             groups_list.append(group)
             # We assume that our group_data is either "dict" or iterable
@@ -60,7 +60,7 @@ class Group(object):
         """
             This method gets vms from all children recursively
         """
-        result = self.vms.values()
+        result = list(self.vms.values())
         for child in self.children:
             result.extend(child.get_all_vms())
         # make list distinct
@@ -93,7 +93,7 @@ class Group(object):
         lines.append(status_line)
         if self.vms:
             lines.append("GROUP_VMS:")
-            lines.extend([" -" + vm for vm in self.vms.keys()])
+            lines.extend([" -" + vm for vm in list(self.vms.keys())])
         prefix = "\t" * self.parent_count()
         info = "\n".join([prefix + line for line in lines])
         children_info = "\n".join([str(i) for i in self.children])

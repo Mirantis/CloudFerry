@@ -22,7 +22,7 @@ class Cursor(object):
         self.threads = []
         self.to_start()
 
-    def next(self):
+    def __next__(self):
         if not self.next_iter:
             self.next_iter = self.net
             self.threads = [i for i in self.next_iter.parall_elem]

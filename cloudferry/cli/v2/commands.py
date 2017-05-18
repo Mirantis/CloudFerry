@@ -47,7 +47,7 @@ class MigrationBaseMixin(base.YamlConfigMixin):
             self.app.parser.error(
                 "Invalid migration: '%s' (choose from %s)" % (
                     parsed_args.migration,
-                    "'" + "', ".join(self.config.migrations.keys()) + "'"))
+                    "'" + "', ".join(list(self.config.migrations.keys())) + "'"))
 
 
 class EstimateMigration(MigrationBaseMixin, lister.Lister):
@@ -101,7 +101,7 @@ class Query(base.YamlConfigMixin, lister.Lister):
         parser = super(Query, self).get_parser(prog_name)
         parser.add_argument('cloud', help="Name of cloud")
         parser.add_argument('object_type',
-                            choices=procedures.model.type_aliases.keys(),
+                            choices=list(procedures.model.type_aliases.keys()),
                             help='Type of object')
         parser.add_argument('query', default='[*]', nargs='?',
                             help='JMESPath query')
@@ -112,7 +112,7 @@ class Query(base.YamlConfigMixin, lister.Lister):
             self.app.parser.error(
                 "Invalid cloud: '%s' (choose from %s)" % (
                     parsed_args.cloud,
-                    "'" + "', ".join(self.config.clouds.keys()) + "'"))
+                    "'" + "', ".join(list(self.config.clouds.keys())) + "'"))
 
         return procedures.show_query(parsed_args.cloud,
                                      parsed_args.object_type,

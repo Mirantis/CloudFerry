@@ -125,7 +125,7 @@ def get_token(credential, scope):
             # TODO(antonf): add support for Keystone v3 API
             client = _get_authenticated_v2_client(credential, scope)
             new_token = client.auth_token
-            for service_type in consts.ServiceType.values():
+            for service_type in list(consts.ServiceType.values()):
                 try:
                     service_url = client.service_catalog.url_for(
                         service_type=service_type,

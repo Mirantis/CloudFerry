@@ -27,9 +27,7 @@ class CopyFailed(RuntimeError):
     pass
 
 
-class CopyMechanism(object):
-    __metaclass__ = abc.ABCMeta
-
+class CopyMechanism(object, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def copy(self, context, source_object, destination_object):
         raise NotImplementedError()

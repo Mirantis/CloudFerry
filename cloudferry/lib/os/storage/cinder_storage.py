@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import copy
-from itertools import ifilter
+
 
 from cinderclient.v1 import client as cinder_client
 from cinderclient import exceptions as cinder_exc
@@ -247,7 +247,7 @@ class CinderStorage(storage.Storage):
         if filtering_enabled:
             flts = self.get_filter().get_filters()
             for f in flts:
-                volumes = ifilter(f, volumes)
+                volumes = filter(f, volumes)
             volumes = list(volumes)
 
             def get_name(volume):
@@ -416,7 +416,7 @@ class CinderStorage(storage.Storage):
 
     def deploy_volumes(self, info):
         new_ids = {}
-        for vol_id, vol in info[utils.VOLUMES_TYPE].iteritems():
+        for vol_id, vol in info[utils.VOLUMES_TYPE].items():
             vol_for_deploy = self.convert_to_params(vol)
             volume = self.create_volume(**vol_for_deploy)
             vol[utils.VOLUME_BODY]['id'] = volume.id
@@ -436,7 +436,7 @@ class CinderStorage(storage.Storage):
             'display_name': vol.display_name,
             'display_description': vol.display_description,
             'volume_type': (
-                None if vol.volume_type == u'None' else vol.volume_type),
+                None if vol.volume_type == 'None' else vol.volume_type),
             'availability_zone': vol.availability_zone,
             'device': vol.attachments[0][
                 'device'] if vol.attachments else None,

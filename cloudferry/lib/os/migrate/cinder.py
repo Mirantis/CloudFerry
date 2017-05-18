@@ -11,7 +11,7 @@
 # implied.
 # See the License for the specific language governing permissions and#
 # limitations under the License.
-import cStringIO
+import io
 import hashlib
 import inspect
 import logging
@@ -841,7 +841,7 @@ class SetUnlimitedQuotas(BaseSymmetricSingletonTask):
     def _set_quotas(client, tenant_id, **kwargs):
         quotas = getattr(clients.retry(client.quotas.get, tenant_id), '_info')
         original = {}
-        for item, value in kwargs.items():
+        for item, value in list(kwargs.items()):
             if quotas[item] != value:
                 original[item] = quotas[item]
         clients.retry(client.quotas.update, tenant_id, **kwargs)
@@ -920,7 +920,7 @@ def _allocate_port(host, cloud):
 
 
 def _get_private_key(rsa_key):
-    pkey = cStringIO.StringIO()
+    pkey = io.StringIO()
     rsa_key.write_private_key(pkey)
     return pkey.getvalue()
 

@@ -156,7 +156,7 @@ class NeutronNetwork(network.Network):
                 try_get_tenant_name_by_id(tenant_id)
         data = {}
         if self.config.network.get_all_quota:
-            for t_id, t_val in tenants.iteritems():
+            for t_id, t_val in tenants.items():
                 tenant_name = self.tenant_name_map.map(t_val)
                 data[tenant_name] = self.neutron_client.show_quota(t_id)
         else:
@@ -166,13 +166,13 @@ class NeutronNetwork(network.Network):
                         try_get_tenant_name_by_id(t['tenant_id'])
                     tenant_name = self.tenant_name_map.map(t_val)
                     data[tenant_name] = {k: v
-                                         for k, v in t.iteritems()
+                                         for k, v in t.items()
                                          if k != 'tenant_id'}
         return data
 
     def upload_quota(self, quota):
         identity = self.identity_client
-        for q_name, q_val in quota.iteritems():
+        for q_name, q_val in quota.items():
             tenant_id = identity.get_tenant_id_by_name(q_name)
             LOG.debug("Update quotas for tenant '%s' (%s): %s", q_name,
                       tenant_id, pprint.pformat(q_val))
@@ -1274,7 +1274,7 @@ class NeutronNetwork(network.Network):
             existing_port = self.check_existing_port(
                 net['id'], port['mac_address'],
                 ip_addresses=ip_addresses,
-                existing_ports=existing_ports.values())
+                existing_ports=list(existing_ports.values()))
             if existing_port is not None:
                 if existing_port['mac_address'] == port['mac_address']:
                     LOG.debug('Port %s already migrated to %s',
@@ -1554,13 +1554,13 @@ class NeutronNetwork(network.Network):
             else:
                 if arg == 'allocation_pools':
                     pools = net_res[arg]
-                    net_res[arg] = [ip for pl in pools for ip in pl.values()]
+                    net_res[arg] = [ip for pl in pools for ip in list(pl.values())]
                 for argitem in net_res[arg]:
-                    if isinstance(argitem, basestring):
+                    if isinstance(argitem, str):
                         argitem = argitem.lower()
                     list_info.append(argitem)
         hash_list = \
-            [info.lower() if isinstance(info, basestring) else info
+            [info.lower() if isinstance(info, str) else info
              for info in list_info]
         hash_list.sort()
         return hash(tuple(hash_list))

@@ -115,7 +115,7 @@ class ScpCopier(base.BaseCopier):
                 files.FullAccessRemoteDir(dst_runner, dst_temp_dir) as dst_tmp:
             src_part_path = os.path.join(src_tmp.dirname, part_filename)
             dst_part_path = os.path.join(dst_tmp.dirname, part_filename)
-            for i in xrange(num_blocks):
+            for i in range(num_blocks):
                 files.remote_split_file(src_runner, path_src, src_part_path, i,
                                         block_size)
                 gzipped_path = files.remote_gzip(src_runner, src_part_path)

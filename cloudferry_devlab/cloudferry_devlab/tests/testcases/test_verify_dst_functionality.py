@@ -348,7 +348,7 @@ class VerifyDstCloudFunctionality(functional_test.FunctionalTest):
                                           tnt_name)
         self.release_fips_tenant()
 
-        for _ in xrange(self.neutron_float_ip_quota):
+        for _ in range(self.neutron_float_ip_quota):
             self.dst_cloud.neutronclient.create_floatingip(
                 {"floatingip": {"floating_network_id":
                                 self.external_network_id}})
@@ -374,7 +374,7 @@ class VerifyDstCloudFunctionality(functional_test.FunctionalTest):
         if 'user' in key_pair:
             del key_pair['user']
 
-        for _ in xrange(quota_limit_left):
+        for _ in range(quota_limit_left):
             key_pair['name'] = self.generate_random_name(key_pair_test_name)
             self.dst_cloud.novaclient.keypairs.create(**key_pair)
             time.sleep(1)

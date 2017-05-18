@@ -57,7 +57,7 @@ class VerifyDstDeletedTenantResources(functional_test.FunctionalTest):
         return undeleted_users
 
     def _net_is_attached_to_vm(self, src_net_name):
-        networks_names_lists = [vm.networks.keys() for vm in self.dst_vm_list]
+        networks_names_lists = [list(vm.networks.keys()) for vm in self.dst_vm_list]
         network_names_list = sum(networks_names_lists, [])
         return src_net_name in network_names_list
 
@@ -99,7 +99,7 @@ class VerifyDstDeletedTenantResources(functional_test.FunctionalTest):
         result_vol_ids = []
         src_vol_list_by_disp_name = [vol['display_name'] for vol in
                                      src_volumes_list]
-        for volume_name, volume_obj in self.dst_volumes_admin.iteritems():
+        for volume_name, volume_obj in self.dst_volumes_admin.items():
             if volume_name in src_vol_list_by_disp_name:
                 if not self._volume_is_attached_to_vm(volume_obj):
                     result_vol_ids.append(volume_obj.id)

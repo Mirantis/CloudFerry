@@ -28,14 +28,14 @@ class MigrationNotifierTestCase(test.TestCase):
         n.add_observer(o)
 
         type_vm = objects.MigrationObjectType.VM
-        for i in xrange(num_messages):
+        for i in range(num_messages):
             n.append_message(type_vm, obj, '{:d}'.format(i))
 
         obj = o.get_object(type_vm, obj)
         if obj is None:
             self.fail("Observer must have object stored")
 
-        for i in xrange(num_messages):
+        for i in range(num_messages):
             self.assertIn(str(i), obj.message)
 
     def test_updates_object_state(self):

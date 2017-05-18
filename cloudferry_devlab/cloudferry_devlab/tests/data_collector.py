@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and#
 # limitations under the License.
 
-import ConfigParser
+import configparser
 import pkg_resources
 
 import yaml
@@ -46,7 +46,7 @@ class DataCollector(object):
     def __init__(self, config):
         self.cloud_info = None
         self.utils = utils.Utils()
-        confparser = ConfigParser.ConfigParser()
+        confparser = configparser.ConfigParser()
         confparser.read(config.cloud_ferry_conf)
         self.config_ini = base.get_dict_from_config_file(confparser)
         self.config = config

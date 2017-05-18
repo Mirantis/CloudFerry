@@ -55,7 +55,7 @@ class AttachVolumesCompute(action.Action):
         info = copy.deepcopy(info)
         compute_res = self.cloud.resources[utils.COMPUTE_RESOURCE]
         storage_res = self.cloud.resources[utils.STORAGE_RESOURCE]
-        for instance in info[utils.INSTANCES_TYPE].itervalues():
+        for instance in info[utils.INSTANCES_TYPE].values():
             if not instance[utils.META_INFO].get(utils.VOLUME_BODY):
                 continue
             for vol in instance[utils.META_INFO][utils.VOLUME_BODY]:

@@ -117,4 +117,4 @@ class Migration(object):
         """
         res = self.resource[position]
         objs = res.read_info()[resource_type]
-        return objs.values() if isinstance(objs, dict) else objs
+        return list(objs.values()) if isinstance(objs, dict) else objs

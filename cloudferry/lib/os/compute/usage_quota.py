@@ -131,7 +131,7 @@ class UsageQuotaCompute(object):
               " and ({quota_usages}.resource='{resource}') and " \
               "({quota_usages}.project_id='{tenant_id}')"
         LOG.info("Decrement usages quota user '%s'", user_id)
-        for res, value in quota.iteritems():
+        for res, value in quota.items():
             sql_render = sql.format(quota_usages=cls.NOVA_QUOTA_USAGES,
                                     in_use=value, user_id=user_id,
                                     tenant_id=tenant_id, resource=res)
@@ -146,7 +146,7 @@ class UsageQuotaCompute(object):
               " and ({quota_usages}.resource='{resource}') and " \
               "({quota_usages}.project_id='{tenant_id}')"
         LOG.info("Increment usages quota user '%s'", user_id)
-        for res, value in quota.iteritems():
+        for res, value in quota.items():
             if not cls.check_resource(db, tenant_id, user_id, res):
                 cls.insert_resource_usage(db, tenant_id, user_id, res)
             sql_render = sql.format(quota_usages=cls.NOVA_QUOTA_USAGES,

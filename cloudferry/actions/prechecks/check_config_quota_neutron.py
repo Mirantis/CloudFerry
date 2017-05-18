@@ -56,7 +56,7 @@ class CheckConfigQuotaNeutron(action.Action):
         quot_default_dst = network_dst.show_quota(dst_temp_tenant.id)
         is_configs_different = False
         identity_dst.delete_tenant(dst_temp_tenant)
-        for item_quot, val_quot in quot.iteritems():
+        for item_quot, val_quot in quot.items():
             if val_quot != quot_default_dst[item_quot]:
                 is_configs_different = True
                 LOG.info("Item %s in quotas is different (SRC CLOUD: %s, "
@@ -67,7 +67,7 @@ class CheckConfigQuotaNeutron(action.Action):
 
     @staticmethod
     def get_tenants_without_quotas(tenants_src, list_quotas):
-        tenants_ids = tenants_src.keys()
+        tenants_ids = list(tenants_src.keys())
         quotas_ids_tenants = [quota["tenant_id"] for quota in list_quotas]
         return list(set(tenants_ids) - set(quotas_ids_tenants))
 

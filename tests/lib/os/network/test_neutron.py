@@ -917,7 +917,7 @@ class NeutronTestCase(test.TestCase):
 
     def test_generate_new_segmentation_id_vlan_limit(self):
         dst_seg_ids = {'gre': [2, 4, 6, 14, 21],
-                       'vlan': range(2, 4096),
+                       'vlan': list(range(2, 4096)),
                        'vxlan': [10, 30, 40]}
 
         self.assertRaises(exception.AbortMigrationError,

@@ -96,7 +96,7 @@ class CheckFilter(action.Action):
             invalid_data.update(filter_object.check())
 
         # Filter only non-empty values
-        invalid_data = {k: v for k, v in invalid_data.iteritems() if v}
+        invalid_data = {k: v for k, v in invalid_data.items() if v}
 
         if invalid_data:
             msg = "\n\nInvalid Filter Data:\n\n%s" % yaml.dump(invalid_data)

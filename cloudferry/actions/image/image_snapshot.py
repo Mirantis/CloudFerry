@@ -33,7 +33,7 @@ class ImageSnapshotBasic(action.Action):
 
     def get_images_id_list(self):
         """returns array of images id"""
-        return self.get_image_resource().read_info()['images'].keys()
+        return list(self.get_image_resource().read_info()['images'].keys())
 
 
 class ImageSnapshot(ImageSnapshotBasic):

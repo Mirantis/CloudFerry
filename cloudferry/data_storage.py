@@ -42,14 +42,14 @@ def check_redis_config():
     host = CONF.database.host
     port = CONF.database.port
 
-    if host is None or host == "" or not isinstance(host, basestring):
+    if host is None or host == "" or not isinstance(host, str):
         message = ("Invalid configuration value set for Redis DB host. "
                    "Please check 'host' option value in [database] group.")
         LOG.error(message)
         errors_found = True
 
     if (port is None or
-            not isinstance(port, basestring) and
+            not isinstance(port, str) and
             not isinstance(port, int) or port == ""):
         message = ("Invalid configuration value for Redis DB port. "
                    "Please check 'port' option value in [database] group.")

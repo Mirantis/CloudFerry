@@ -11,7 +11,7 @@
 # implied.
 # See the License for the specific language governing permissions and#
 # limitations under the License.
-import StringIO
+import io
 
 from cloudferry.lib.utils import override
 from tests import test
@@ -110,7 +110,7 @@ class AttributeOverrideTestCase(test.TestCase):
                   replace: n
         """
 
-        stream = StringIO.StringIO(invalid_yaml)
+        stream = io.StringIO(invalid_yaml)
 
         self.assertRaises(override.InvalidOverrideConfigError,
                           override.AttributeOverrides.from_stream,
@@ -134,7 +134,7 @@ class AttributeOverrideTestCase(test.TestCase):
         yamls = [correct_yaml1, correct_yaml2]
 
         for yaml in yamls:
-            stream = StringIO.StringIO(yaml)
+            stream = io.StringIO(yaml)
 
             try:
                 override.AttributeOverrides.from_stream(stream, 'servers')

@@ -67,7 +67,7 @@ class Cloud(object):
         resource_config = copy.deepcopy(cloud_config)
         resource_config[resource_name] = utils.ext_dict()
         for k, v in getattr(config,
-                            '%s_%s' % (position, resource_name)).iteritems():
+                            '%s_%s' % (position, resource_name)).items():
             resource_config[resource_name][k] = v
 
         return resource_config
@@ -79,7 +79,7 @@ class Cloud(object):
             conf = {
                 k: getattr(conf_res, k, None) if getattr(conf_res, k, None)
                 else config.mysql[k]
-                for k in config.mysql.keys()}
+                for k in list(config.mysql.keys())}
             db_name_use = getattr(conf_res, 'db_name')\
                 if getattr(conf_res, 'db_name', None) else db_name
             return mysql_connector.MysqlConnector(conf, db_name_use)

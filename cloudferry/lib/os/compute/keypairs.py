@@ -87,9 +87,9 @@ class DBBroker(object):
         db = DBBroker._get_db(cloud)
 
         key_pair_dict = key_pair.to_dict()
-        kp_fields = str(key_pair.to_dict().keys()).translate(None, "[]'")
+        kp_fields = str(list(key_pair.to_dict().keys())).translate(None, "[]'")
         kp_values = ','.join(['"{}"'.format(kp)
-                              for kp in key_pair_dict.values()])
+                              for kp in list(key_pair_dict.values())])
 
         sql = ("INSERT INTO {nova_keypairs} ({fields}) "
                "VALUES ({values}) ON DUPLICATE KEY UPDATE id=id;"

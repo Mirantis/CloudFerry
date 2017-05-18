@@ -50,9 +50,9 @@ def size_multiplier(unit):
 
 
 def parse_size(size):
-    if isinstance(size, (int, long)):
+    if isinstance(size, int):
         return max((0, size))
-    if isinstance(size, basestring):
+    if isinstance(size, str):
         size = size.upper()
         if size == 'OFF':
             return 0

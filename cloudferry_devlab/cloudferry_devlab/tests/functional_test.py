@@ -207,7 +207,7 @@ class FunctionalTest(unittest.TestCase):
         def _image_exclude_filter(images):
             filtered_images_name = []
             for image in images:
-                for key, value in exclude_images_with_fields.iteritems():
+                for key, value in exclude_images_with_fields.items():
                     if key in image and image[key] == value:
                         break
                 else:

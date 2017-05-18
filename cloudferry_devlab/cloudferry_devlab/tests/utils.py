@@ -27,10 +27,10 @@ import cloudferry_devlab.tests.config as config
 
 def convert(data):
     """ Method converts all unicode objects to string objects"""
-    if isinstance(data, basestring):
+    if isinstance(data, str):
         return str(data)
     elif isinstance(data, collections.Mapping):
-        return dict(convert(item) for item in data.iteritems())
+        return dict(convert(item) for item in data.items())
     elif isinstance(data, collections.Iterable):
         return type(data)(convert(item) for item in data)
     else:

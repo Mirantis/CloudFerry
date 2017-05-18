@@ -30,7 +30,7 @@ class DetachVolumesCompute(action.Action):
         info = copy.deepcopy(info)
         compute_resource = self.cloud.resources[utils.COMPUTE_RESOURCE]
         storage_resource = self.cloud.resources[utils.STORAGE_RESOURCE]
-        for instance in info[utils.INSTANCES_TYPE].itervalues():
+        for instance in info[utils.INSTANCES_TYPE].values():
             LOG.info("Detaching volumes for instance %s [%s]",
                      instance['instance']['name'], instance['instance']['id'])
             if not instance['instance'][utils.VOLUMES_TYPE]:

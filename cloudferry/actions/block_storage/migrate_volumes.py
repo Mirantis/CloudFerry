@@ -262,7 +262,7 @@ class MigrateVolumes(action.Action):
 
         new_volumes = {}
         volumes = self.get_cinder_volumes(**kwargs)
-        volumes = [v['volume'] for v in volumes.itervalues()]
+        volumes = [v['volume'] for v in volumes.values()]
 
         view = VolumeMigrationView(volumes)
         view.initial_message()

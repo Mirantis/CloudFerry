@@ -35,7 +35,7 @@ class KeyPairObjectTestCase(test.TestCase):
         )
         kp = keypairs.KeyPair.from_tuple(kp_db)
         kp_dict = kp.to_dict(allow_auto_fields=False)
-        self.assertTrue('id' not in kp_dict.keys())
+        self.assertTrue('id' not in list(kp_dict.keys()))
 
     def test_all_fields_are_accessible_through_attributes(self):
         kp = keypairs.KeyPair()
@@ -124,7 +124,7 @@ class KeyPairMigrationTestCase(test.TestCase):
 
         db_broker = mock.Mock()
         db_broker.get_all_keypairs.return_value = [
-            keypairs.KeyPair() for _ in xrange(num_keypairs)]
+            keypairs.KeyPair() for _ in range(num_keypairs)]
         db_broker.store_keypair = mock.Mock()
 
         tkp = tcr.TransportKeyPairs(init=mock.MagicMock(),
@@ -160,7 +160,7 @@ class KeyPairForInstancesTestCase(test.TestCase):
                     'key_name': 'key%d' % i,
                     'user_id': 'user%d' % i
                 }
-            } for i in xrange(num_instances_with_keys)
+            } for i in range(num_instances_with_keys)
         }
 
         instances.update({
@@ -168,7 +168,7 @@ class KeyPairForInstancesTestCase(test.TestCase):
                 'instance': {
                     'user_id': 'user%d' % j
                 }
-            } for j in xrange(num_instances_without_keys)}
+            } for j in range(num_instances_without_keys)}
         )
 
         info = {utl.INSTANCES_TYPE: instances}

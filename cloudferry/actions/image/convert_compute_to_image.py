@@ -49,7 +49,7 @@ class ConvertComputeToImage(action.Action):
         storage_resource = self.cloud.resources[utl.STORAGE_RESOURCE]
         compute_ignored_images = {}
         missing_images = {}
-        for instance_id, instance in info[utl.INSTANCES_TYPE].iteritems():
+        for instance_id, instance in info[utl.INSTANCES_TYPE].items():
             _instance = instance[utl.INSTANCE_BODY]
             image_id = None
             if _instance['boot_mode'] == utl.BOOT_FROM_VOLUME:
@@ -86,7 +86,7 @@ class ConvertComputeToImage(action.Action):
             else:
                 compute_ignored_images[instance_id] = instance
         if missing_images:
-            LOG.warning('List of broken images: %s', missing_images.values())
+            LOG.warning('List of broken images: %s', list(missing_images.values()))
         return {
             self.target_output: image_info,
             'compute_ignored_images': compute_ignored_images,

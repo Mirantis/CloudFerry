@@ -47,7 +47,7 @@ class Migrate(base.ConfigMixin, lister.Lister):
         return parser
 
     def override_config(self, group, **kwargs):
-        for name, value in kwargs.items():
+        for name, value in list(kwargs.items()):
             if value is not None:
                 self.config.set_override(name, value, group)
 

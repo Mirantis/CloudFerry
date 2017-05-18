@@ -470,7 +470,7 @@ class EmcISCSIPlugin(base.CinderMigrationPlugin):
             volume_name_template
         backend_timeout = context.cloud_config.migrate.storage_backend_timeout
 
-        vmax_config_opts = [opt for opt in locals().keys()
+        vmax_config_opts = [opt for opt in list(locals().keys())
                             if opt.startswith('vmax_')]
         missing_opts = [opt for opt in vmax_config_opts if opt is None]
         if any(missing_opts):

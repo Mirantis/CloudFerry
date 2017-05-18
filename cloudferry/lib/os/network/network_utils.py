@@ -33,7 +33,7 @@ def prepare_networks(info, keep_ip, network_resource, identity_resource):
 
     # disable DHCP in all subnets
     with temporarily_disable_dhcp(network_resource, tenants):
-        for (id_inst, inst) in instances.iteritems():
+        for (id_inst, inst) in instances.items():
             params = []
             networks_info = inst[utils.INSTANCE_BODY][utils.INTERFACES]
             tenant_name = inst[utils.INSTANCE_BODY]['tenant_name']
@@ -70,7 +70,7 @@ def prepare_networks(info, keep_ip, network_resource, identity_resource):
 def get_tenants(instances):
     # Get all tenants, participated in migration process
     tenants = set()
-    for instance in instances.values():
+    for instance in list(instances.values()):
         tenants.add(instance[utils.INSTANCE_BODY]['tenant_name'])
 
     return tenants
@@ -146,7 +146,7 @@ def check_floating_ip(network_resource, src_net, port):
 def associate_floatingip(info, network_resource):
     info_compute = copy.deepcopy(info)
 
-    instance = info_compute[utils.INSTANCES_TYPE].values()[0]
+    instance = list(info_compute[utils.INSTANCES_TYPE].values())[0]
     networks_info = instance[utils.INSTANCE_BODY].get('nics', [])
     for net in networks_info:
         fip = net.get('floatingip')

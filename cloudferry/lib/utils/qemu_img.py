@@ -24,7 +24,7 @@ from cloudferry.lib.utils import ssh_util
 LOG = log.getLogger(__name__)
 
 
-class QemuImgInfoParser(object):
+class QemuImgInfoParser(object, metaclass=abc.ABCMeta):
     """Parses `qemu-img info` command human-readable output.
 
     Tested on qemu-img v1.0 and v2.0.0.
@@ -32,8 +32,6 @@ class QemuImgInfoParser(object):
     More recent versions of qemu-img support JSON output, but many real-world
     systems with old openstack releases still come with qemu-img v1.0 which
     does not support JSON"""
-
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, img_info_output):
         self.info = self.parse(img_info_output)
@@ -122,8 +120,7 @@ class QemuImg(ssh_util.SshUtil):
                                          ignore_errors=False,
                                          sudo=True)
             return JsonQemuImgInfoParser(qemu_img_json)
-        except (remote_runner.RemoteExecutionError, TypeError, ValueError) \
-                as e:
+        except (remote_runner.RemoteExecutionError, TypeError, ValueError) as e:
             # old qemu version not supporting JSON, fallback to human-readable
             # qemu-img output parser
             LOG.debug("Failed to get JSON from 'qemu-img info %s', error: %s",

@@ -36,7 +36,7 @@ class CinderStorageMigrationProgressView(object):
         self.total_vol_size_b = 0
         self.migrated_vol_size_b = 0
         self.failed_vol_size_b = 0
-        for v_id, v_size in self.volumes_size_map.iteritems():
+        for v_id, v_size in self.volumes_size_map.items():
             self.total_vol_size_b += v_size
             if v_id in self.dst_volumes:
                 self.migrated_vol_size_b += v_size

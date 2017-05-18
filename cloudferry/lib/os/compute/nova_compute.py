@@ -489,7 +489,7 @@ class NovaCompute(compute.Compute):
         dst_flavors = self.get_flavor_list(is_public=None)
         conflicting = set()
         missing = {}
-        for flavor_id, obj in flavors.items():
+        for flavor_id, obj in list(flavors.items()):
             src_flavor = obj['flavor']
             for dst_flavor in dst_flavors:
                 if self._is_flavors_identical(src_flavor, flavor_id,
@@ -509,7 +509,7 @@ class NovaCompute(compute.Compute):
             self.delete_flavor(flavor_id)
 
         # Create all missing flavors
-        for flavor_id, flavor in missing.items():
+        for flavor_id, flavor in list(missing.items()):
             LOG.debug('Creating flavor %s (name: %s)', flavor_id,
                       flavor['name'])
             self.create_flavor(
@@ -523,7 +523,7 @@ class NovaCompute(compute.Compute):
                 rxtx_factor=flavor['rxtx_factor'],
                 is_public=flavor['is_public'])
 
-        for flavor_id, obj in flavors.items():
+        for flavor_id, obj in list(flavors.items()):
             flavor = obj['flavor']
             if not flavor['is_public']:
                 # user can specify tenant name instead of ID, which is ignored
@@ -575,7 +575,7 @@ class NovaCompute(compute.Compute):
             quota = _quota['quota']
             quota_info = dict()
 
-            for quota_name, quota_value in quota.iteritems():
+            for quota_name, quota_value in quota.items():
                 if quota_value != DEFAULT_QUOTA_VALUE:
                     quota_info[quota_name] = quota_value
 
@@ -670,7 +670,7 @@ class NovaCompute(compute.Compute):
         # information
         ignored_instance_args = ['key_name', 'user_id']
 
-        boot_args = {k: v for k, v in kwargs.items()
+        boot_args = {k: v for k, v in list(kwargs.items())
                      if k not in ignored_instance_args}
         LOG.debug("Creating instance with args '%s'",
                   pprint.pformat(boot_args))

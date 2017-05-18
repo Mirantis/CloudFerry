@@ -35,7 +35,7 @@ def hash_iterable(iterable):
     """
     value = hash(iterable.__class__)
     for item in iterable:
-        value = ((value * 1000003) & sys.maxint) ^ compute_hash(item)
+        value = ((value * 1000003) & sys.maxsize) ^ compute_hash(item)
     return value
 
 
@@ -107,7 +107,7 @@ class ExceptionWithFormatting(Exception):
     def __str__(self):
         try:
             if len(self.args) > 1:
-                if isinstance(self.args[0], basestring):
+                if isinstance(self.args[0], str):
                     # We suspect that anything can happen here, like __repr__
                     # or __str__ raising arbitrary exceptions.
                     # We want to suppress them and deliver to the user as much
@@ -116,7 +116,7 @@ class ExceptionWithFormatting(Exception):
                     # string.
                     return self.args[0] % self.args[1:]
             elif len(self.args) == 1:
-                if isinstance(self.args[0], basestring):
+                if isinstance(self.args[0], str):
                     return self.args[0]
             else:
                 return 'ValidationError'

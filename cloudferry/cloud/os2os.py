@@ -80,7 +80,7 @@ class OS2OSFerry(object):
         scenario.init_tasks(self.init)
         scenario.load_scenario()
         process_migration = {k: cursor.Cursor(v)
-                             for k, v in scenario.get_net().items() if v}
+                             for k, v in list(scenario.get_net().items()) if v}
         scheduler_migr = scheduler.Scheduler(namespace=namespace_scheduler,
                                              **process_migration)
         scheduler_migr.start()

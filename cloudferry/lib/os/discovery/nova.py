@@ -130,7 +130,7 @@ class ServerDiscoverer(discover.Discoverer):
 
         # Collect information about ephemeral disks
         # TODO: work with different servers in parallel
-        for host, host_servers in servers.items():
+        for host, host_servers in list(servers.items()):
             LOG.debug('Getting ephemeral disks information from cloud %s '
                       'host %s', self.cloud.name, host)
             with remote.RemoteExecutor(self.cloud, host) as remote_executor:
@@ -139,7 +139,7 @@ class ServerDiscoverer(discover.Discoverer):
 
         # Store data to local database
         with model.Session() as session:
-            for host_servers in servers.values():
+            for host_servers in list(servers.values()):
                 for server in host_servers:
                     session.store(server)
                     if _need_image_membership(server):

@@ -25,6 +25,7 @@ from cloudferry.lib.utils import log
 from cloudferry.lib.utils import mapper
 from cloudferry.lib.utils import proxy_client
 from cloudferry.lib.utils import utils
+from functools import reduce
 
 
 LOG = log.getLogger(__name__)
@@ -236,7 +237,7 @@ class NetworkInfo(object):
         self.ports = ports
 
     def get_networks(self):
-        return self.by_id.values()
+        return list(self.by_id.values())
 
     def get_network_by_segmentation_id(self, net_type, segmentation_id):
         """
@@ -275,7 +276,7 @@ class NetworkInfo(object):
 
         floating_ips_list = []
 
-        for floating_ip in self.floating_ips.values():
+        for floating_ip in list(self.floating_ips.values()):
             dst_floating_ip = dst_info.floating_ips.get(floating_ip.address)
             if not dst_floating_ip:
                 LOG.debug("There is no such Floating IP on DST: '%s'. "
@@ -501,12 +502,12 @@ class NetworkInfo(object):
 
         invalid_ext_nets = {'src_nets': [], 'dst_nets': []}
 
-        src_ext_nets_ids = [net.id for net in self.by_id.itervalues() if
+        src_ext_nets_ids = [net.id for net in self.by_id.values() if
                             net.external]
-        dst_ext_nets_ids = [net.id for net in dst_info.by_id.itervalues() if
+        dst_ext_nets_ids = [net.id for net in dst_info.by_id.values() if
                             net.external]
 
-        for src_net_id, dst_net_id in ext_net_map.iteritems():
+        for src_net_id, dst_net_id in ext_net_map.items():
             if src_net_id not in src_ext_nets_ids:
                 invalid_ext_nets['src_nets'].append(src_net_id)
             if dst_net_id not in dst_ext_nets_ids:
@@ -626,7 +627,7 @@ def convert_allocation_pools_to_ip_set(allocation_pools):
     :return: netaddr.ip.sets.IPSet instance
     """
 
-    ranges = [pool.values() for pool in allocation_pools]
+    ranges = [list(pool.values()) for pool in allocation_pools]
     for count, pool in enumerate(ranges):
         ranges[count] = [netaddr.IPAddress(ip) for ip in pool]
         ranges[count].sort()

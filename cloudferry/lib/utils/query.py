@@ -44,7 +44,7 @@ class DictSubQuery(object):
 
     def __init__(self, pattern):
         assert isinstance(pattern, dict)
-        self.pattern = [self._compile_query(k, v) for k, v in pattern.items()]
+        self.pattern = [self._compile_query(k, v) for k, v in list(pattern.items())]
 
     def search(self, values):
         """
@@ -59,7 +59,7 @@ class DictSubQuery(object):
 
     @staticmethod
     def _compile_query(key, expected):
-        assert isinstance(key, basestring)
+        assert isinstance(key, str)
 
         negative = False
         if key.startswith('!'):
@@ -92,10 +92,10 @@ class Query(object):
         assert isinstance(query, dict)
 
         self.queries = {}
-        for type_name, subqueries in query.items():
+        for type_name, subqueries in list(query.items()):
             cls = model.get_model(type_name)
             for subquery in subqueries:
-                if isinstance(subquery, basestring):
+                if isinstance(subquery, str):
                     subquery = jmespath.compile(subquery)
                 else:
                     subquery = DictSubQuery(subquery)
@@ -116,7 +116,7 @@ class Query(object):
         """
         result = set()
         if cls is None:
-            for cls, queries in self.queries.items():
+            for cls, queries in list(self.queries.items()):
                 objects = session.list(cls, cloud)
                 for query in queries:
                     result.update(query.search(objects))

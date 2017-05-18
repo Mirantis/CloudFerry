@@ -128,7 +128,7 @@ class Prerequisites(base.BasePrerequisites):
         if user_tenant_roles is None:
             user_tenant_roles = self.config.user_tenant_roles
         for user_roles in user_tenant_roles:
-            for user, roles in user_roles.iteritems():
+            for user, roles in user_roles.items():
                 user = self.get_user_id(user)
                 for role in roles:
                     try:
@@ -275,7 +275,7 @@ class Prerequisites(base.BasePrerequisites):
         exclude_img_ids = [str(img_id) for img_id in
                            blacklisted.get_blacklisted_img_ids()]
         img_ids = blacklisted.filter_images()
-        for key in filter_dict.keys():
+        for key in list(filter_dict.keys()):
             if key == 'images':
                 if not all_tenants_filter:
                     filter_dict[key]['exclude_images_list'].extend(
@@ -334,7 +334,7 @@ class Prerequisites(base.BasePrerequisites):
                 file_path[self.config.all_tenants_filter_filename] = \
                     filter_dict
 
-        for key, value in file_path.iteritems():
+        for key, value in file_path.items():
             with open(self.get_abs_path(key), "w") as f:
                 yaml.dump(value, f, default_flow_style=False)
 
@@ -539,7 +539,7 @@ class Prerequisites(base.BasePrerequisites):
                         subnet.get('set_as_gateway_for_routers') is None:
                     continue
                 routers = subnet['set_as_gateway_for_routers']
-                for router, gw_info in routers.iteritems():
+                for router, gw_info in routers.items():
                     router_id = self.get_router_id(router)
                     parameters = {"network_id": net['network']['id']}
                     if self.openstack_release in ['icehouse', 'juno'] and \
@@ -591,7 +591,7 @@ class Prerequisites(base.BasePrerequisites):
             self.log.debug("Creating LB pool %s.", pool['name'])
             pool["tenant_id"] = self.get_tenant_id(pool["tenant_name"])
             pool["subnet_id"] = self.get_subnet_id(pool["subnet_name"])
-            pool = {i: v for i, v in pool.iteritems()
+            pool = {i: v for i, v in pool.items()
                     if i not in ["tenant_name", "subnet_name"]}
             self.neutronclient.create_pool({'pool': pool})
 
@@ -599,14 +599,14 @@ class Prerequisites(base.BasePrerequisites):
         for member in members:
             member["pool_id"] = self.get_pool_id(member["pool_name"])
             member["tenant_id"] = self.get_tenant_id(member["tenant_name"])
-            member = {i: v for i, v in member.iteritems()
+            member = {i: v for i, v in member.items()
                       if i not in ["pool_name", "tenant_name"]}
             self.neutronclient.create_member({"member": member})
 
     def create_monitors(self, monitors):
         for mon in monitors:
             mon["tenant_id"] = self.get_tenant_id(mon["tenant_name"])
-            mon = {i: v for i, v in mon.iteritems()
+            mon = {i: v for i, v in mon.items()
                    if i not in ["tenant_name"]}
             self.neutronclient.create_health_monitor({"health_monitor": mon})
 
@@ -616,7 +616,7 @@ class Prerequisites(base.BasePrerequisites):
             vip["pool_id"] = self.get_pool_id(vip["pool_name"])
             vip["tenant_id"] = self.get_tenant_id(vip["tenant_name"])
             vip["subnet_id"] = self.get_subnet_id(vip["subnet_name"])
-            vip = {i: v for i, v in vip.iteritems()
+            vip = {i: v for i, v in vip.items()
                    if i not in ["tenant_name", "pool_name", "subnet_name"]}
             self.neutronclient.create_vip({"vip": vip})
 
@@ -968,7 +968,7 @@ class Prerequisites(base.BasePrerequisites):
         7. Create user tenant roles
         """
         user_tenant_role = self.config.user_tenant_roles[0]
-        username, roles_to_create = user_tenant_role.items()[0]
+        username, roles_to_create = list(user_tenant_role.items())[0]
         user = [user for user in self.config.users
                 if username == user['name']][0]
         tenants_names = [user['tenant']]
@@ -1096,7 +1096,7 @@ class Prerequisites(base.BasePrerequisites):
         flavors = [f for f in self.config.flavors if f['name'] in flv_names]
         self.dst_cloud.create_flavors(flavors)
 
-        for tenant_name, vms in tenants.iteritems():
+        for tenant_name, vms in tenants.items():
             user = get_user_for_tenant(tenant_name)
             self.dst_cloud.switch_user(
                 user['name'], user['password'], user['tenant'])

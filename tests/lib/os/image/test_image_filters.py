@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import datetime
-from itertools import ifilter
+
 import mock
 
 from cloudferry.lib.os.image import filters
@@ -54,7 +54,7 @@ class GlanceImageFilterTestCase(test.TestCase):
                                                filter_yaml=filter_yaml)
 
         for f in glance_filters.get_filters():
-            images = ifilter(f, images)
+            images = filter(f, images)
 
         self.assertEqual(set(expected_ids),
                          set([i.id for i in images]))

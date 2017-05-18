@@ -25,7 +25,7 @@ class AttributeString(str):
 
 def create_attribute_string(value, **kwargs):
     string = AttributeString(value)
-    for name, value in kwargs.items():
+    for name, value in list(kwargs.items()):
         setattr(string, name, value)
     return string
 

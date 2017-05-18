@@ -31,7 +31,7 @@ class TestCase(base.BaseTestCase):
 
     def override_config(self, options):
         for group in options:
-            for name, value in options[group].items():
+            for name, value in list(options[group].items()):
                 self.cfg.set_override(name=name, override=value, group=group)
 
     def cloud_config(self, position):
@@ -58,7 +58,7 @@ class TestCase(base.BaseTestCase):
         self.assertIsZero(mock_obj.call_count, message)
 
     def assertAttrs(self, obj, **attrs):
-        for name, value in attrs.items():
+        for name, value in list(attrs.items()):
             self.assertTrue(hasattr(obj, name))
             if value is None:
                 self.assertIsNone(getattr(obj, name))

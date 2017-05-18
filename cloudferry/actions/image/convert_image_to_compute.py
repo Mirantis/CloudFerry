@@ -21,7 +21,7 @@ class ConvertImageToCompute(action.Action):
     def run(self, images_info=None, compute_ignored_images=None, **kwargs):
         images_info = copy.deepcopy(images_info)
         instance_info = {'instances': compute_ignored_images or {}}
-        for image in images_info['images'].itervalues():
+        for image in images_info['images'].values():
             if 'instance' not in image['meta']:
                 continue
             instances = image['meta']['instance']

@@ -14,7 +14,7 @@
 # limitations under the License.
 
 import argparse
-import ConfigParser
+import configparser
 
 from cloudferry_devlab import generate_load
 from cloudferry_devlab.tests import base
@@ -36,7 +36,7 @@ def main():
                         help='Please point configuration.ini file location')
 
     args = parser.parse_args()
-    confparser = ConfigParser.ConfigParser()
+    confparser = configparser.ConfigParser()
     confparser.readfp(args.cloudsconf)
     cloudsconf = base.get_dict_from_config_file(confparser)
 
@@ -57,7 +57,7 @@ def restore_vms():
                         help='Please point configuration.ini file location')
 
     args = parser.parse_args()
-    confparser = ConfigParser.ConfigParser()
+    confparser = configparser.ConfigParser()
     confparser.readfp(args.cloudsconf)
     cloudsconf = base.get_dict_from_config_file(confparser)
 

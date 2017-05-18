@@ -17,11 +17,12 @@ import datetime
 
 from cloudferry.lib.utils import filters
 from tests import test
+import collections
 
 
 class BaseCFFiltersTestCase(test.TestCase):
     def test_base_class_has_get_filters_method(self):
-        self.assertTrue(callable(filters.CFFilters.get_filters))
+        self.assertTrue(isinstance(filters.CFFilters.get_filters, collections.Callable))
 
     def test_cannot_create_object_of_filters(self):
         self.assertRaises(TypeError, filters.CFFilters)
@@ -38,33 +39,33 @@ class FilterYamlTestCase(test.TestCase):
         self.assertTrue(yaml_load.called)
 
     def test_returns_empty_dict_if_filter_conf_is_empty(self):
-        filters_file = u""
+        filters_file = ""
         fy = filters.FilterYaml(filters_file)
         self.assertEqual(dict(), fy.get_filter_yaml())
 
     def test_returns_none_if_no_tenant_provided(self):
-        filters_file = u""
+        filters_file = ""
         fy = filters.FilterYaml(filters_file)
         self.assertIsNone(fy.get_tenant())
 
     def test_returns_empty_list_if_nothing_in_image_ids(self):
-        filters_file = u""
+        filters_file = ""
         fy = filters.FilterYaml(filters_file)
         self.assertEqual(list(), fy.get_image_ids())
 
     def test_returns_empty_list_for_get_excluded_image_ids(self):
-        filters_file = u""
+        filters_file = ""
         fy = filters.FilterYaml(filters_file)
         self.assertEqual(list(), fy.get_excluded_image_ids())
 
     def test_returns_empty_list_if_nothing_in_instance_ids(self):
-        filters_file = u""
+        filters_file = ""
         fy = filters.FilterYaml(filters_file)
         self.assertEqual(list(), fy.get_instance_ids())
 
     def test_returns_tenant_id_if_provided(self):
         tenant_id = 'some-tenant'
-        filters_file = u"""
+        filters_file = """
         tenants:
             tenant_id:
                 - {tenant_id}
@@ -75,7 +76,7 @@ class FilterYamlTestCase(test.TestCase):
     def test_returns_instances_from_instance_ids(self):
         instance1 = 'inst1'
         instance2 = 'inst2'
-        filters_file = u"""
+        filters_file = """
         instances:
             id:
                 - {instance1}
@@ -92,7 +93,7 @@ class FilterYamlTestCase(test.TestCase):
     def test_returns_images_from_excluded_image_ids(self):
         image1 = 'image1'
         image2 = 'image2'
-        filters_file = u"""
+        filters_file = """
         images:
             exclude_images_list:
                 - {image1}
@@ -109,7 +110,7 @@ class FilterYamlTestCase(test.TestCase):
     def test_returns_images_from_image_ids(self):
         image1 = 'image1'
         image2 = 'image2'
-        filters_file = u"""
+        filters_file = """
         images:
             images_list:
                 - {image1}
@@ -124,12 +125,12 @@ class FilterYamlTestCase(test.TestCase):
         self.assertIn(image2, filtered_images)
 
     def test_date_returns_none_if_not_specified(self):
-        filters_file = u""
+        filters_file = ""
         fy = filters.FilterYaml(filters_file)
         self.assertIsNone(fy.get_image_date())
 
     def test_date_filter_returns_datetime_object(self):
-        filters_file = u"""
+        filters_file = """
         images:
             date: 2000-01-01
         """

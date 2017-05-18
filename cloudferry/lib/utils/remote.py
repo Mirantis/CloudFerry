@@ -18,7 +18,7 @@ import os
 import re
 import signal
 import socket
-import StringIO
+import io
 import subprocess
 import tempfile
 
@@ -49,7 +49,7 @@ class RemoteExecutor(object):
     """
 
     def __init__(self, cloud, hostname, ignore_errors=False):
-        if not isinstance(hostname, basestring):
+        if not isinstance(hostname, str):
             hostname = _get_ip_from_node(cloud, hostname)
 
         assert hostname is not None
@@ -247,7 +247,7 @@ def _get_ip_from_node(cloud, compute_node):
         candidates = list(_strip_suffix(
             compute_node.interfaces.get(cloud.access_iface, [])))
     else:
-        for addresses in compute_node.interfaces.values():
+        for addresses in list(compute_node.interfaces.values()):
             candidates.extend(_strip_suffix(addresses))
 
     if cloud.access_networks:
@@ -274,7 +274,7 @@ def create_pkey(content):
         return None
     for key_cls in (paramiko.ECDSAKey, paramiko.RSAKey, paramiko.DSSKey):
         try:
-            return key_cls.from_private_key(StringIO.StringIO(content))
+            return key_cls.from_private_key(io.StringIO(content))
         except paramiko.SSHException:
             pass
 

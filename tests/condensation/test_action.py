@@ -28,25 +28,25 @@ class ActionTest(test.TestCase):
     def test_add_migration_action(self):
         a = action.Actions("")
         initial_length = len(a.data[action.MIGRATE])
-        vm = mock.Mock(vm_id=u"uuid")
+        vm = mock.Mock(vm_id="uuid")
         target_node = mock.Mock()
-        target_node.name = u"name"
+        target_node.name = "name"
         a.add_migration_action(vm, target_node)
         self.assertEqual(initial_length + 1, len(a.data[action.MIGRATE]))
 
     def test_add_transfer_action(self):
         a = action.Actions("")
         initial_length = len(a.data[action.TRANSFER])
-        a.add_transfer_action(u"test")
+        a.add_transfer_action("test")
         self.assertEqual(initial_length + 1, len(a.data[action.TRANSFER]))
 
     def test_condensation_action(self):
         a = action.Actions("")
-        vm = mock.Mock(vm_id=u"uuid")
+        vm = mock.Mock(vm_id="uuid")
         source_node = mock.Mock()
-        source_node.name = u"name"
+        source_node.name = "name"
         target_node = mock.Mock()
-        target_node.name = u"name"
+        target_node.name = "name"
         initial_length = len(a.data[action.CONDENSE])
         a.add_condensation_action(vm, source_node, target_node)
         self.assertEqual(initial_length + 1, len(a.data[action.CONDENSE]))

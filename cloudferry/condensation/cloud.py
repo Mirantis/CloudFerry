@@ -24,6 +24,7 @@ from cloudferry.condensation import action
 from cloudferry.condensation import node
 from cloudferry.condensation import vm
 from cloudferry.lib.utils import log
+from functools import reduce
 
 LOG = log.getLogger(__name__)
 CONF = cfg.CONF
@@ -50,23 +51,23 @@ class Cloud(object):
         nodes_dict, flavors_dict, vms_dict = {}, {}, {}
 
         # create Flavor Objects
-        for flavor_id, flavor_params in flavors.items():
+        for flavor_id, flavor_params in list(flavors.items()):
             flavors_dict.update(
                 {flavor_id: flavor.Flavor(**flavor_params)})
         flavors_dict[flavor.default] = flavor.default
 
         # count gcd on Flavors for ram and cores
         ram_factor = reduce(
-            fractions.gcd, [i.ram for i in flavors_dict.values()])
+            fractions.gcd, [i.ram for i in list(flavors_dict.values())])
         core_factor = reduce(
-            fractions.gcd, [i.core for i in flavors_dict.values()])
+            fractions.gcd, [i.core for i in list(flavors_dict.values())])
 
         # reduce flavors with core_factor and ram_factor
-        for flavor_obj in flavors_dict.values():
+        for flavor_obj in list(flavors_dict.values()):
             flavor_obj.reduce_resources(ram_factor, core_factor)
 
         # create Node Objects
-        for node_name, node_params in nodes.items():
+        for node_name, node_params in list(nodes.items()):
             # replace fqdn with just node name
             node_name = node_name.split(".")[0]
             nodes_dict.update(
@@ -77,7 +78,7 @@ class Cloud(object):
                     **node_params)})
 
         # create Vm objects linked to Nodes and Flavors
-        for vm_params in vms.values():
+        for vm_params in list(vms.values()):
             node_obj = nodes_dict.get(vm_params.get("host"))
             if node_obj is None:
                 # VM is running on a host which is down
@@ -115,7 +116,7 @@ class Cloud(object):
         """
         LOG.debug("adding nodes to cloud " + self.name)
         self.nodes = nodes_dict
-        for node_obj in nodes_dict.values():
+        for node_obj in list(nodes_dict.values()):
             node_obj.cloud = self
 
     def calc_required_flavors_for_nodes(self):
@@ -130,10 +131,10 @@ class Cloud(object):
         # on nodes that are not full
         LOG.debug("starting recalculation of flavor distribution over nodes")
         flavors_dict = {}
-        for node_obj in self.nodes.values():
+        for node_obj in list(self.nodes.values()):
             if node_obj.is_full:
                 continue
-            for vm_obj in node_obj.vms.values():
+            for vm_obj in list(node_obj.vms.values()):
                 if vm_obj.flavor not in flavors_dict:
                     flavors_dict[vm_obj.flavor] = 0
                 flavors_dict[vm_obj.flavor] += 1
@@ -170,18 +171,18 @@ class Cloud(object):
         self.improve_accuracy = improve_accuracy
         self.node_ids_to_be_recalculated = []
         # recalculate all nodes that are neither full, nor empty
-        for node_name, node_obj in self.nodes.items():
+        for node_name, node_obj in list(self.nodes.items()):
             if node_obj.vms and not node_obj.is_full:
                 self.node_ids_to_be_recalculated.append(node_name)
         self.condense_recursively()
 
     def fil_node(self, node_to_be_filled, node_name_to_be_filled):
-        for flavor_obj, count in self.required_flavors_for_nodes[
-                node_name_to_be_filled].items():
+        for flavor_obj, count in list(self.required_flavors_for_nodes[
+                node_name_to_be_filled].items()):
             # for all nodes containing that flavor we have number of vms
             # with flavor on that node
-            for node_obj, flavor_count in flavor_obj.node_distribution(
-                    self).items():
+            for node_obj, flavor_count in list(flavor_obj.node_distribution(
+                    self).items()):
                 if not count:
                     # we placed enough vms of this flavor to node
                     break
@@ -208,7 +209,7 @@ class Cloud(object):
 
     def postprocess_filing(self):
         # process checks after node is full
-        for node_name, node_obj in self.nodes.items():
+        for node_name, node_obj in list(self.nodes.items()):
             # first check - find free/full nodes and exclude them
             # from candidates to be filled
             if not node_obj.vms or node_obj.is_full:
@@ -220,8 +221,8 @@ class Cloud(object):
                 continue
             # second check - find nodes that need more flavors that we have
             if node_name in self.required_flavors_for_nodes:
-                for flavor_obj, count in self.required_flavors_for_nodes[
-                        node_name].items():
+                for flavor_obj, count in list(self.required_flavors_for_nodes[
+                        node_name].items()):
                     if count > flavor_obj.amount(self):
                         if node_name not in self.node_ids_to_be_recalculated:
                             self.node_ids_to_be_recalculated.append(node_name)
@@ -281,7 +282,7 @@ class Cloud(object):
         """
             This method transfers all nodes without vms to cloud
         """
-        for key, value in self.nodes.items():
+        for key, value in list(self.nodes.items()):
             if not value.vms:
                 self.transfer_node(key, cloud)
 
@@ -307,7 +308,7 @@ class Cloud(object):
             to destination cloud
         """
         # try to assign vms on dst cloud
-        list_of_nodes = [i for i in cloud_obj.nodes.values() if not i.is_full]
+        list_of_nodes = [i for i in list(cloud_obj.nodes.values()) if not i.is_full]
 
         flavors_dict = {}
         vm_list = group_obj.get_all_vms()
@@ -328,7 +329,7 @@ class Cloud(object):
                 fl_required = node_obj.calculate_flavors_required(
                     flavors_dict, True)
             result[node_obj] = fl_required
-            for flavor_obj, count in fl_required.items():
+            for flavor_obj, count in list(fl_required.items()):
                 flavors_dict[flavor_obj] -= count
                 if flavors_dict[flavor_obj] == 0:
                     del flavors_dict[flavor_obj]
@@ -352,7 +353,7 @@ class Cloud(object):
             else:
                 self.groups.insert(0, group_to_migrate)
                 return
-        for node_obj, flavors_required in distribution.items():
+        for node_obj, flavors_required in list(distribution.items()):
             for vm_obj in group_to_migrate.get_all_vms():
                 flavor_obj = vm_obj.flavor
                 if flavor_obj in flavors_required:
@@ -386,7 +387,7 @@ class Cloud(object):
         table = prettytable.PrettyTable(
             ['Node', 'Number of VMS', 'Ram Utilization', 'Core Utilization'])
         rows = []
-        for node_name, node_obj in self.nodes.items():
+        for node_name, node_obj in list(self.nodes.items()):
             util = node_obj.utilization
             rows.append((node_name, len(node_obj.vms), util[0], util[1]))
         rows = sorted(rows, key=lambda a: a[1], reverse=True)
@@ -397,9 +398,9 @@ class Cloud(object):
                 "{table}\n\n").format(
                     total=str(sum(i[1] for i in rows)),
                     free=str(len(
-                        [i for i in self.nodes.values() if not i.vms])),
+                        [i for i in list(self.nodes.values()) if not i.vms])),
                     full=str(len(
-                        [i for i in self.nodes.values() if i.is_full])),
+                        [i for i in list(self.nodes.values()) if i.is_full])),
                     name=self.name,
                     table=str(table))
 

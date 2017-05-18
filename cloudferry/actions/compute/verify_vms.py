@@ -33,10 +33,10 @@ class VerifyVms(action.Action):
         search_opts.update(kwargs.get('search_opts_tenant', {}))
         src_info = kwargs['info_backup']
         old_ids = set(dst_inst['meta']['old_id']
-                      for dst_inst in dst_info['instances'].values())
+                      for dst_inst in list(dst_info['instances'].values()))
         dst_cmp_info = {}
         inst_cnt = 0
-        for dst_inst in dst_info['instances'].values():
+        for dst_inst in list(dst_info['instances'].values()):
             old_id = dst_inst['meta']['old_id']
             dst_cmp_info[old_id] = {}
             dst_inst_ = dst_inst['instance']

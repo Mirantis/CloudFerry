@@ -55,7 +55,7 @@ class Node(object):
         """
             Returns vm with flavor provided from this node
         """
-        for vm_obj in self.vms.values():
+        for vm_obj in list(self.vms.values()):
             if vm_obj.flavor == flavor:
                 return vm_obj
 
@@ -71,8 +71,8 @@ class Node(object):
         """
             This method returns free ram, core on Node
         """
-        return (self.ram - sum(i.flavor.ram for k, i in self.vms.items()),
-                self.core - sum(i.flavor.core for k, i in self.vms.items()))
+        return (self.ram - sum(i.flavor.ram for k, i in list(self.vms.items())),
+                self.core - sum(i.flavor.core for k, i in list(self.vms.items())))
 
     @property
     def utilization(self):
@@ -89,7 +89,7 @@ class Node(object):
             we gonna migrate provided flavors to the node
         """
         free_ram, free_core = self.free_resources
-        for fl_obj, count in flavors.items():
+        for fl_obj, count in list(flavors.items()):
             free_ram -= fl_obj.ram * count
             free_core -= fl_obj.core * count
         return ((self.ram - free_ram) * 100. / self.ram,
@@ -116,7 +116,7 @@ class Node(object):
         # we need this step to reduce number of available flavors
         # because we have vms assigned to this node
         flavors = copy.copy(flavors)
-        for value in self.vms.values():
+        for value in list(self.vms.values()):
             if value.flavor in flavors:
                 flavors[value.flavor] -= 1
 
@@ -134,7 +134,7 @@ class Node(object):
         if accurate:
             # convert data from dict to list of tuples (algorithm interface)
             flavor_id, flavor_ram = (0, 1)
-            for fl_obj, count in flavors.items():
+            for fl_obj, count in list(flavors.items()):
                 flavors_dict[fl_obj.fl_id] = fl_obj
                 for i in range(count):
                     flavors_list.append(
@@ -151,7 +151,7 @@ class Node(object):
             # convert data from dict to list of tuples (algorithm interface)
             flavor_id, flavor_ram = (0, 2)
             # transform flavors to more comfortable datatype
-            for fl_obj, count in flavors.items():
+            for fl_obj, count in list(flavors.items()):
                 flavors_dict[fl_obj.fl_id] = fl_obj
                 flavors_list.append(
                     (fl_obj.fl_id, count, fl_obj.reduced_ram,

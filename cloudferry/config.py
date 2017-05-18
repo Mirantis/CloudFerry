@@ -61,7 +61,7 @@ class ConfigSchema(marshmallow.Schema):
     @marshmallow.validates_schema(pass_original=True)
     def check_unknown_fields(self, _, original_data):
         possible_fields = set()
-        for field_name, field in self.fields.items():
+        for field_name, field in list(self.fields.items()):
             possible_fields.add(field.load_from or field_name)
         for key in original_data:
             if key not in possible_fields:
@@ -89,13 +89,13 @@ class ConfigSchema(marshmallow.Schema):
             cls._format_error_dict(result, keys, messages)
         elif isinstance(messages, list):
             cls._format_error_list(result, keys, messages)
-        elif isinstance(messages, basestring):
+        elif isinstance(messages, str):
             cls._format_error_str(result, keys, messages)
 
     @classmethod
     def _format_error_dict(cls, result, keys, messages):
         assert isinstance(messages, dict)
-        for field, message in messages.items():
+        for field, message in list(messages.items()):
             cls._format_messages(result, keys + [field], message)
 
     @classmethod
@@ -106,7 +106,7 @@ class ConfigSchema(marshmallow.Schema):
 
     @classmethod
     def _format_error_str(cls, result, keys, message):
-        assert isinstance(message, basestring)
+        assert isinstance(message, str)
         if keys:
             result.append(
                 'Error in {classname}:{keys}: {message}'.format(
@@ -144,8 +144,7 @@ class ConfigSectionMetaclass(type):
         return config_section_class
 
 
-class ConfigSection(ConfigSchema):
-    __metaclass__ = ConfigSectionMetaclass
+class ConfigSection(ConfigSchema, metaclass=ConfigSectionMetaclass):
     schema_class = None
 
     def __init__(self, **kwargs):
@@ -196,7 +195,7 @@ class DictField(fields.Field):
             self.fail('type')
 
         ret = {}
-        for key, val in value.items():
+        for key, val in list(value.items()):
             k = self.key_field.deserialize(key)
             v = self.nested_field.deserialize(val)
             ret[k] = v
@@ -248,7 +247,7 @@ class OverrideRulesField(fields.Dict):
             value, attr, data)
         result = {}
         try:
-            for attr_name, rules in dict_val.items():
+            for attr_name, rules in list(dict_val.items()):
                 result[attr_name] = [override.OverrideRule(attr_name, rule)
                                      for rule in rules]
             return result
@@ -287,7 +286,7 @@ class OneOrMore(fields.Field):
     def _deserialize(self, value, attr, data):
         # pylint: disable=protected-access
         if isinstance(value, collections.Sequence) and \
-                not isinstance(value, basestring):
+                not isinstance(value, str):
             return [self.base_type._deserialize(v, attr, data)
                     for v in value]
         else:
@@ -324,9 +323,9 @@ class Scope(ConfigSection):
 
     @marshmallow.validates_schema(skip_on_field_errors=True)
     def check_migration_have_correct_source_and_dict(self, data):
-        if all(data[k] is None for k in self.fields.keys()):
+        if all(data[k] is None for k in list(self.fields.keys())):
             raise ValidationError('At least one of %s shouldn\'t be None',
-                                  self.fields.keys())
+                                  list(self.fields.keys()))
 
 
 class Credential(ConfigSection):
@@ -418,14 +417,14 @@ class Migration(ConfigSection):
     @marshmallow.validates_schema(skip_on_field_errors=True)
     def check_override_rules(self, data):
         overrides = data['overrides']
-        for object_type, ovr in overrides.items():
+        for object_type, ovr in list(overrides.items()):
             try:
                 model_cls = model.get_model(object_type)
             except ImportError:
                 raise marshmallow.ValidationError(
                     'Invalid object type "{0}"'.format(object_type))
             schema = model_cls.schema_class()
-            for attribute, _ in ovr.items():
+            for attribute, _ in list(ovr.items()):
                 if attribute not in schema.fields:
                     raise marshmallow.ValidationError(
                         'Invalid override rule: "{0}" schema don\'t have '
@@ -445,7 +444,7 @@ class Migration(ConfigSection):
             migrated_class = factory_class.migrated_class
             self.migration_flow_factories[migrated_class] = factory_class
 
-        self.overrides = {model.get_model(k): v for k, v in overrides.items()}
+        self.overrides = {model.get_model(k): v for k, v in list(overrides.items())}
 
         super(Migration, self).__init__(objects=objects, **kwargs)
 
@@ -464,7 +463,7 @@ class Configuration(ConfigSection):
     def check_migration_have_correct_source_and_dict(self, data):
         clouds = data['clouds']
         migrations = data.get('migrations', {})
-        for migration_name, migration in migrations.items():
+        for migration_name, migration in list(migrations.items()):
             if migration.source not in clouds:
                 raise marshmallow.ValidationError(
                     'Migration "{0}" source "{1}" should be defined '

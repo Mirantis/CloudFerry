@@ -38,8 +38,8 @@ class DiscoverStage(stage.Stage):
 
         # Create set of cloud names that which data is not valid anymore
         old_clouds = set(old_signature.keys())
-        invalid_clouds = old_clouds.difference(new_signature.keys())
-        for name, signature in new_signature.items():
+        invalid_clouds = old_clouds.difference(list(new_signature.keys()))
+        for name, signature in list(new_signature.items()):
             if name not in old_signature:
                 self.missing_clouds.append(name)
                 continue
@@ -57,14 +57,14 @@ class DiscoverStage(stage.Stage):
         have it's own signature.
         """
         return {n: [c.credential.auth_url, c.credential.region_name]
-                for n, c in self.config.clouds.items()}
+                for n, c in list(self.config.clouds.items())}
 
     def execute(self):
         """
         Execute discovery.
         """
         if self.missing_clouds is None:
-            self.missing_clouds = self.config.clouds.keys()
+            self.missing_clouds = list(self.config.clouds.keys())
 
         for cloud_name in self.missing_clouds:
             cloud = self.config.clouds[cloud_name]
@@ -82,7 +82,7 @@ class LinkStage(stage.Stage):
         """
         signature = {}
         with model.Session() as session:
-            for name, migration in self.config.migrations.items():
+            for name, migration in list(self.config.migrations.items()):
                 query = migration.query
                 src_cloud = self.config.clouds[migration.source]
                 objects = query.search(session, src_cloud)
@@ -100,7 +100,7 @@ class LinkStage(stage.Stage):
         Execute migrated objects search.
         """
         with model.Session() as session:
-            for migration in self.config.migrations.values():
+            for migration in list(self.config.migrations.values()):
                 query = migration.query
                 src_cloud = self.config.clouds[migration.source]
                 dst_cloud = self.config.clouds[migration.destination]

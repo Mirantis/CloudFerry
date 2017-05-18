@@ -37,7 +37,7 @@ class TaskTransfer(action.Action):
         info = kwargs[self.input_info]
         data_for_trans = info[self.resource_name]
 
-        for item in data_for_trans.itervalues():
+        for item in data_for_trans.values():
             data = item[self.resource_root_name]
 
             data_is_invalid = not all([data.get(k)

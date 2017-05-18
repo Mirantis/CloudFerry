@@ -101,7 +101,7 @@ def execute_flow(flow):
                 if failure.exc_info is not None:
                     traceback.print_exception(*failure.exc_info)
                 else:
-                    print failure
+                    print(failure)
 
 
 def create_graph_flow(name, objs, subflow_factory_fn, *args, **kwargs):

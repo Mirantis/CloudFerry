@@ -86,7 +86,7 @@ class GetInfoIter(action.Action):
     def run(self, **kwargs):
         info = kwargs[self.iter_info_name]
         objs = info[self.resource_name]
-        obj_id = objs.keys()[0]
+        obj_id = list(objs.keys())[0]
         obj = objs.pop(obj_id)
         new_info = {
             self.resource_name: {obj_id: obj}

@@ -45,7 +45,7 @@ class DisassociateFloatingip(action.Action):
             info_compute = copy.deepcopy(info)
             compute_resource = self.cloud.resources[utl.COMPUTE_RESOURCE]
 
-            instance = info_compute[utl.INSTANCES_TYPE].values()[0]
+            instance = list(info_compute[utl.INSTANCES_TYPE].values())[0]
 
             networks_info = instance[utl.INSTANCE_BODY][utl.INTERFACES]
             old_id = instance[utl.OLD_ID]
@@ -66,7 +66,7 @@ class DisassociateAllFloatingips(action.Action):
 
             instances = info_compute[utl.INSTANCES_TYPE]
 
-            for instance in instances.values():
+            for instance in list(instances.values()):
                 networks_info = instance[utl.INSTANCE_BODY][utl.INTERFACES]
                 old_id = instance[utl.OLD_ID]
                 for net in networks_info:

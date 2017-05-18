@@ -163,7 +163,7 @@ class ShowObjects(ProcedureBase):
         result = []
         total_cnt = 0
         total_size = 0
-        for k, records in data.iteritems():
+        for k, records in data.items():
             cnt = 0
             size = 0
             if self.limit:
@@ -187,7 +187,7 @@ class ShowObjects(ProcedureBase):
 
 def show_query(cloud_name, type_name, qry):
     data = []
-    fields = model.get_model(type_name).get_schema().fields.keys()
+    fields = list(model.get_model(type_name).get_schema().fields.keys())
     with model.Session() as session:
         for r in query.Query({type_name: [qry]}).search(session, cloud_name):
             data.append([str(getattr(r, f)) for f in fields])

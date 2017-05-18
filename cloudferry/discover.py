@@ -37,8 +37,7 @@ class DiscovererNotFound(bases.ExceptionWithFormatting):
             utils.qualname(discoverer_class), *args)
 
 
-class Discoverer(object):
-    __metaclass__ = abc.ABCMeta
+class Discoverer(object, metaclass=abc.ABCMeta):
     discovered_class = None
 
     def __init__(self, config, cloud):
@@ -188,7 +187,7 @@ def discover_all(cfg, cloud):
     :param cloud: config.Cloud instance
     """
     LOG.info('Start discovery process for cloud %s', cloud.name)
-    for discoverer_class in cloud.discoverers.values():
+    for discoverer_class in list(cloud.discoverers.values()):
         LOG.info('Starting discovering %s using %s',
                  utils.qualname(discoverer_class.discovered_class),
                  utils.qualname(discoverer_class))

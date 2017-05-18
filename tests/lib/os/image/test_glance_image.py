@@ -96,7 +96,7 @@ class GlanceImageTestCase(test.TestCase):
             'properties': {},
             'deleted': False,
         }
-        for k, w in values_dict.items():
+        for k, w in list(values_dict.items()):
             setattr(self.fake_image_1, k, w)
         self.fake_image_1.to_dict = mock.Mock(return_value=values_dict)
         self.fake_image_1.deleted = False

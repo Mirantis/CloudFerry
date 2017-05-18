@@ -343,7 +343,7 @@ class LibvirtXmlTestCase(test.TestCase):
         lxml = libvirt.LibvirtXml(src_raw_xml)
 
         self.assertEqual(len(lxml.interfaces), len(dst_vm_xml.interfaces))
-        for i in xrange(len(dst_vm_xml.interfaces)):
+        for i in range(len(dst_vm_xml.interfaces)):
             self.assertEqual(lxml.interfaces[i], dst_vm_xml.interfaces[i])
 
         self.assertEqual(lxml.disk_file, dst_vm_xml.disk_file)

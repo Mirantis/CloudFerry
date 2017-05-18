@@ -28,7 +28,7 @@ class CheckPointVm(action.Action):
         src_compute = self.src_cloud.resources[utils.COMPUTE_RESOURCE]
         dst_compute = self.dst_cloud.resources[utils.COMPUTE_RESOURCE]
         if self.cfg.rollback.keep_migrated_vms:
-            for instance_id, instance in info['instances'].items():
+            for instance_id, instance in list(info['instances'].items()):
                 if instance_id in dst_compute.processing_instances:
                     dst_compute.processing_instances.remove(instance_id)
                 if instance['old_id'] in src_compute.processing_instances:

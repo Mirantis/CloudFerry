@@ -36,7 +36,7 @@ class BasesTestCase(test.TestCase):
     def _shuffle_dict(self, source):
         rnd = random.Random(self.random_seed)
         result = collections.OrderedDict()
-        items = source.items()
+        items = list(source.items())
         rnd.shuffle(items)
         for key, value in items:
             result[key] = value

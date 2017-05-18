@@ -19,9 +19,7 @@ class VolumeObjectNotFoundError(RuntimeError):
     pass
 
 
-class CinderMigrationPlugin(object):
-    __metaclass__ = abc.ABCMeta
-
+class CinderMigrationPlugin(object, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_volume_object(self, context, volume_id):
         """:returns" `FileObject` which corresponds to cinder volume object

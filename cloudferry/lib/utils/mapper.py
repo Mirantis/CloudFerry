@@ -89,4 +89,4 @@ class Mapper(object):
         return self._mapping.get(value, value)
 
     def iteritems(self):
-        return self._mapping.iteritems()
+        return iter(self._mapping.items())

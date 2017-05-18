@@ -49,6 +49,6 @@ class RollbackVerification(functional_test.FunctionalTest):
         for cloud in self.data_after:
             for service in self.data_after[cloud]:
                 for resource in self.data_after[cloud][service]:
-                    print(msg.format(service.lower(), resource.lower()))
+                    print((msg.format(service.lower(), resource.lower())))
                     self.assertEqual(self.data_after[cloud][service][resource],
                                      self.pre_data[cloud][service][resource])

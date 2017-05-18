@@ -43,7 +43,7 @@ class OverrideRule(object):
     @staticmethod
     def _make_predicate(attribute, match):
         def predicate(obj):
-            for key, value in match.items():
+            for key, value in list(match.items()):
                 if obj.get(key) not in value:
                     return False
             return True
@@ -58,7 +58,7 @@ class OverrideRule(object):
     def _validate_match(attribute, match):
         if not isinstance(match, dict):
             return
-        for value in match.values():
+        for value in list(match.values()):
             if not isinstance(value, list):
                 raise TypeError(
                     'Invalid match rule for "%s" attribute, must be '
@@ -88,7 +88,7 @@ class AttributeOverrides(object):
 
     def __init__(self, mapping):
         self.mapping = {}
-        for attr, rules in mapping.items():
+        for attr, rules in list(mapping.items()):
             if isinstance(rules, list):
                 self.mapping[attr] = [OverrideRule(attr, rule)
                                       for rule in rules]
@@ -113,7 +113,7 @@ class AttributeOverrides(object):
             raise InvalidOverrideConfigError(
                 "Mapping file '%s' has unsupported entries: '%s'. "
                 "Please make sure you follow template config." % (
-                    get_filename_from_stream(stream), data.keys()))
+                    get_filename_from_stream(stream), list(data.keys())))
 
         if not isinstance(object_data, dict):
             raise TypeError('%s object in mapping file %s must be '

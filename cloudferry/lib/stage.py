@@ -29,8 +29,7 @@ CREATE TABLE IF NOT EXISTS stages (
 """)
 
 
-class Stage(object):
-    __metaclass__ = abc.ABCMeta
+class Stage(object, metaclass=abc.ABCMeta):
     dependencies = []
 
     def __init__(self, config):

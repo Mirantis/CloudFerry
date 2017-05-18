@@ -175,8 +175,8 @@ class VmMigration(functional_test.FunctionalTest):
             msgs = []
             vm1_param = getattr(vm1, param, None)
             vm2_param = getattr(vm2, param, None)
-            if param == "config_drive" and vm1_param == u'1':
-                vm1_param = u'True'
+            if param == "config_drive" and vm1_param == '1':
+                vm1_param = 'True'
             if vm1_param != vm2_param:
                 error_msg = ('Parameter {param} for VM with name '
                              '{name} is different src: {vm1}, dst: {vm2}')
@@ -226,8 +226,8 @@ class VmMigration(functional_test.FunctionalTest):
         for vm in self.dst_vms:
             if vm.name not in vm_names_with_fip:
                 continue
-            for net in vm.addresses.values():
-                if [True for addr in net if 'floating' in addr.values()]:
+            for net in list(vm.addresses.values()):
+                if [True for addr in net if 'floating' in list(addr.values())]:
                     break
             else:
                 raise RuntimeError('Vm {0} does not have floating ip'.format(

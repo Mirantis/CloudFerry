@@ -78,14 +78,14 @@ class ColdEvacuateTestCase(test.TestCase):
         self.remote_runner = remote_runner_patcher.start()
 
     def _servers_get(self, server_id):
-        if not isinstance(server_id, basestring):
+        if not isinstance(server_id, str):
             server_id = server_id.id
         if server_id not in self.servers:
             raise nova_exc.NotFound(404)
         return self.servers[server_id]
 
     def _servers_delete(self, server_id):
-        if not isinstance(server_id, basestring):
+        if not isinstance(server_id, str):
             server_id = server_id.id
         if server_id not in self.servers:
             raise nova_exc.NotFound(404)
@@ -101,7 +101,7 @@ class ColdEvacuateTestCase(test.TestCase):
         server = self._servers_get(server_id)
         server.status = 'VERIFY_RESIZE'
         services = [
-            s for s in self._services.values()
+            s for s in list(self._services.values())
             if s.status == 'enabled' and s.binary == 'nova-compute' and
             s.host != getattr(s, cold_evacuate.INSTANCE_HOST_ATTRIBUTE)]
         # concatenate all host names to fail test when there is any choice
@@ -133,7 +133,7 @@ class ColdEvacuateTestCase(test.TestCase):
         return server
 
     def _services_list(self, binary=None):
-        services = sorted(self._services.values(), key=lambda x: x.host)
+        services = sorted(list(self._services.values()), key=lambda x: x.host)
         return [s for s in services if s.binary == binary]
 
     def _make_service(self, binary, host, status):

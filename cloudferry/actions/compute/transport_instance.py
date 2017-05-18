@@ -69,7 +69,7 @@ class TransportInstance(action.Action):
         }
 
         # Get next one instance
-        for instance_id, instance in info[utils.INSTANCES_TYPE].iteritems():
+        for instance_id, instance in info[utils.INSTANCES_TYPE].items():
             LOG.debug("Transport instance '%s': %s", instance_id, instance)
 
             instance = self._replace_user_ids(instance)
@@ -159,7 +159,7 @@ class TransportInstance(action.Action):
         one_instance = copy.deepcopy(one_instance)
         dst_compute = self.dst_cloud.resources[utils.COMPUTE_RESOURCE]
 
-        _instance = one_instance[utils.INSTANCES_TYPE].values()[0]
+        _instance = list(one_instance[utils.INSTANCES_TYPE].values())[0]
         instance = _instance[utils.INSTANCE_BODY]
         new_ids = {}
         instance_az = dst_compute.get_instance_availability_zone(instance)
@@ -175,10 +175,10 @@ class TransportInstance(action.Action):
 
         new_ids[new_id] = instance['id']
 
-        new_info = dst_compute.read_info(search_opts={'id': new_ids.keys()})
-        for i in new_ids.iterkeys():
+        new_info = dst_compute.read_info(search_opts={'id': list(new_ids.keys())})
+        for i in new_ids.keys():
             dst_compute.change_status('shutoff', instance_id=i)
-        for new_id, old_id in new_ids.iteritems():
+        for new_id, old_id in new_ids.items():
             new_instance = new_info['instances'][new_id]
             old_instance = one_instance['instances'][old_id]
 
@@ -199,7 +199,7 @@ class TransportInstance(action.Action):
         one_instance = copy.deepcopy(one_instance)
         dst_compute = self.dst_cloud.resources[utils.COMPUTE_RESOURCE]
 
-        _instance = one_instance[utils.INSTANCES_TYPE].values()[0]
+        _instance = list(one_instance[utils.INSTANCES_TYPE].values())[0]
         instance_body = _instance[utils.INSTANCE_BODY]
         hosts = dst_compute.get_compute_hosts(availability_zone)
         if not hosts:
@@ -227,7 +227,7 @@ class TransportInstance(action.Action):
 
             next_host = hosts.pop()
             host_az = ':'.join([availability_zone, next_host])
-            _updated_instance = one_instance[utils.INSTANCES_TYPE].values()[0]
+            _updated_instance = list(one_instance[utils.INSTANCES_TYPE].values())[0]
             updated_instance_body = _updated_instance[utils.INSTANCE_BODY]
 
             try:
@@ -255,7 +255,7 @@ class TransportInstance(action.Action):
         new_info = copy.deepcopy(new_info)
         LOG.debug('prepare ephemeral: info=%s', pprint.pformat(new_info))
 
-        for new_id, old_id in map_new_to_old_ids.iteritems():
+        for new_id, old_id in map_new_to_old_ids.items():
             instance_old = info[INSTANCES][old_id]
             instance_new = new_info[INSTANCES][new_id]
 

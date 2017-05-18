@@ -216,7 +216,7 @@ class Reference(_FieldBase, fields.Field):
     def __init__(self, model_class, many=False, ensure_existence=False,
                  convertible=True, **kwargs):
         super(Reference, self).__init__(**kwargs)
-        if isinstance(model_class, basestring):
+        if isinstance(model_class, str):
             self._model_class_name = model_class
             self._model_class = None
         else:
@@ -303,7 +303,7 @@ class Schema(marshmallow.Schema):
     FIELD_VALUE_TRANSFORMERS = {}
 
     def get_primary_key_field(self):
-        for name, field in self.fields.items():
+        for name, field in list(self.fields.items()):
             if isinstance(field, PrimaryKey):
                 return name
         return None
@@ -313,7 +313,7 @@ class ModelMetaclass(type):
     def __new__(mcs, name, parents, dct):
         if 'schema_class' not in dct:
             schema_fields = {}
-            for key, value in dct.items():
+            for key, value in list(dct.items()):
                 if isinstance(value, _FieldBase):
                     schema_fields[key] = value
                     descriptor = value.create_descriptor(key)
@@ -344,15 +344,13 @@ class ModelMetaclass(type):
         return model_parent
 
 
-class Model(_EqualityByPrimaryKeyMixin):
+class Model(_EqualityByPrimaryKeyMixin, metaclass=ModelMetaclass):
     """
     Inherit this class to define model class for OpenStack objects like
     tenants, volumes, servers, etc...
     If model is to be used as root object saved to database (e.g. not nested),
     then schema must include ``model.PrimaryKey`` field.
     """
-
-    __metaclass__ = ModelMetaclass
     schema_class = Schema
     pk_field = None
 
@@ -386,7 +384,7 @@ class Model(_EqualityByPrimaryKeyMixin):
                 obj._original[cls.pk_field] = value
             setattr(obj, cls.pk_field, value)
 
-        for name, field in schema.fields.items():
+        for name, field in list(schema.fields.items()):
             if isinstance(field, PrimaryKey):
                 continue
             elif isinstance(field, Nested):
@@ -430,7 +428,7 @@ class Model(_EqualityByPrimaryKeyMixin):
         """
         schema = cls.schema_class(strict=True)
         if table is not None:
-            only = tuple(n for n, f in schema.fields.items()
+            only = tuple(n for n, f in list(schema.fields.items())
                          if f.table == table)
             return cls.schema_class(strict=True, only=only)
         else:
@@ -453,7 +451,7 @@ class Model(_EqualityByPrimaryKeyMixin):
         """
         original = self._original
         schema = self.get_schema(table)
-        for name, field in schema.fields.items():
+        for name, field in list(schema.fields.items()):
             value = getattr(self, name)
             if isinstance(field, Reference):
                 if original.get(name) != field.get_significant_value(value):
@@ -475,7 +473,7 @@ class Model(_EqualityByPrimaryKeyMixin):
         don't need to be saved to database).
         """
         schema = self.get_schema()
-        for name, field in schema.fields.items():
+        for name, field in list(schema.fields.items()):
             if isinstance(field, Nested):
                 value = getattr(self, name, None)
                 if value is not None:
@@ -498,7 +496,7 @@ class Model(_EqualityByPrimaryKeyMixin):
         """
         result = []
         schema = self.get_schema()
-        for name, field in schema.fields.items():
+        for name, field in list(schema.fields.items()):
             if isinstance(field, Dependency):
                 value = getattr(self, name)
                 if field.many:
@@ -575,7 +573,7 @@ class Model(_EqualityByPrimaryKeyMixin):
         """
         Return list of tables for which fields was defined.
         """
-        return set(f.table for f in cls.get_schema().fields.values())
+        return set(f.table for f in list(cls.get_schema().fields.values()))
 
     def __repr__(self):
         schema = self.get_schema()
@@ -781,7 +779,7 @@ class Session(object):
             self.tx.__exit__(exc_type, exc_val, exc_tb)
 
     def _dump_objects(self):
-        for (cls, pk), obj in self.session.items():
+        for (cls, pk), obj in list(self.session.items()):
             if obj is None:
                 self._store_none(cls, pk)
                 continue
@@ -909,7 +907,7 @@ class Session(object):
             cloud_name = cloud.name
             query = self._make_sql(cls, 'type', 'cloud', list=True)
         result = []
-        for obj in self.session.values():
+        for obj in list(self.session.values()):
             if isinstance(obj, cls) and \
                     (cloud is None or cloud_name == obj.primary_key.cloud):
                 result.append(obj)
@@ -937,7 +935,7 @@ class Session(object):
             cloud_name = cloud.name
         if cloud is not None and object_id is not None:
             assert object_id.cloud == cloud_name
-        for key in self.session.keys():
+        for key in list(self.session.keys()):
             obj_cls, obj_pk = key
             matched = True
             if cls is not None and cls is not obj_cls:

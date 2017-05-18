@@ -80,7 +80,7 @@ class Scenario(object):
         for key in ['migration', 'preparation', 'rollback']:
             if hasattr(self, key) and getattr(self, key):
                 scenario = getattr(self, key)
-                checker = ScenarioChecker(self.tasks.keys(), key, scenario)
+                checker = ScenarioChecker(list(self.tasks.keys()), key, scenario)
                 checker.check()
                 result.update({key: self.construct_net(scenario, self.tasks)})
         return result
@@ -88,7 +88,7 @@ class Scenario(object):
     def construct_net(self, process, tasks):
         net = None
         for item in process:
-            name, value = item.items()[0]
+            name, value = list(item.items())[0]
             elem = tasks[name] if name in tasks else None
             if isinstance(value, list):
                 if isinstance(value[0], dict):
@@ -165,7 +165,7 @@ class ScenarioChecker(object):
 
     def check_dict_list(self, node):
         for item in node:
-            dict_items = item.items()
+            dict_items = list(item.items())
             self.check_node(dict_items[0])
 
     def check_task(self, task_name):

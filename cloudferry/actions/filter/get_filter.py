@@ -37,7 +37,7 @@ class GetFilter(action.Action):
 
         filtered_tenant = search_opts_tenant.get('tenant_id', ['INVALID'])[0]
 
-        for r in self.src_cloud.resources.values():
+        for r in list(self.src_cloud.resources.values()):
             if hasattr(r, 'filter_tenant_id') and filtered_tenant != 'INVALID':
                 r.filter_tenant_id = filtered_tenant
 

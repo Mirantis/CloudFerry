@@ -495,19 +495,19 @@ class BasePrerequisites(object):
         try:
             vm_status = novaclient.servers.get(vm_id).status
             if vm_state != vm_status:
-                if vm_state == u'ERROR':
+                if vm_state == 'ERROR':
                     novaclient.servers.reset_state(server=vm_id,
                                                    state=vm_state.lower())
-                elif vm_state == u'SUSPENDED':
+                elif vm_state == 'SUSPENDED':
                     novaclient.servers.suspend(vm_id)
-                elif vm_state == u'PAUSED':
+                elif vm_state == 'PAUSED':
                     novaclient.servers.pause(vm_id)
-                elif vm_state == u'SHUTOFF':
+                elif vm_state == 'SHUTOFF':
                     novaclient.servers.stop(vm_id)
-                elif vm_state == u'VERIFY_RESIZE':
+                elif vm_state == 'VERIFY_RESIZE':
                     vm_state = ('VERIFY_RESIZE', 'ACTIVE', 'ERROR')
                     novaclient.servers.resize(vm_id, '2')
-                elif vm_state == u'ACTIVE':
+                elif vm_state == 'ACTIVE':
                     novaclient.servers.start(vm_id)
         except (nova_exceptions.Conflict, nova_exceptions.BadRequest) as e:
             if logger:

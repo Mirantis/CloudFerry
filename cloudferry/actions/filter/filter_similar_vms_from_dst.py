@@ -53,12 +53,12 @@ class FilterSimilarVMsFromDST(action.Action):
         else:
             self.tenant_id_to_new_id = self.get_similar_tenants()
         self.find_similar_instances()
-        for src_instance_id, dst_ids in self.similar_isntances.items():
+        for src_instance_id, dst_ids in list(self.similar_isntances.items()):
             LOG.warning("Instance %s already in DST cloud as instance %s. "
                         "It will be excluded from migration.",
                         src_instance_id, dst_ids)
             self.src_instances.pop(src_instance_id)
-        for src_instance_id, dst_ids in self.conflict_instances.items():
+        for src_instance_id, dst_ids in list(self.conflict_instances.items()):
             LOG.warning("Instance %s can not be migrated to DST because "
                         "instance %s already use the same IP. "
                         "It will be excluded from migration.",
@@ -82,20 +82,20 @@ class FilterSimilarVMsFromDST(action.Action):
                     tenant_id=[self.tenant_id_to_new_id[tenant_id]]
                 )['instances'])
         titii_dst = self.make_tenant_ip_to_instance_id_dict(self.dst_instances)
-        for tenant_id, ip_to_id in titii_src.items():
+        for tenant_id, ip_to_id in list(titii_src.items()):
             tenant_new_id = self.tenant_id_to_new_id.get(tenant_id, None)
             if tenant_new_id is None:
-                self.skipped_instances.extend(ip_to_id.values())
+                self.skipped_instances.extend(list(ip_to_id.values()))
                 continue
             dst_ip_to_id = titii_dst[tenant_new_id]
-            for ip, instance_id in ip_to_id.items():
+            for ip, instance_id in list(ip_to_id.items()):
                 if ip in dst_ip_to_id:
                     self.instance_comparison(instance_id, dst_ip_to_id[ip])
 
     @staticmethod
     def make_tenant_ip_to_instance_id_dict(instances):
         tenant_ip_to_instance_id = collections.defaultdict(dict)
-        for instance in instances.values():
+        for instance in list(instances.values()):
             info = instance['instance']
             ip_to_id = tenant_ip_to_instance_id[info['tenant_id']]
             instance_id = info['id']

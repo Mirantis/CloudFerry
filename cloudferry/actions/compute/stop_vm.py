@@ -25,7 +25,7 @@ class StopVms(action.Action):
     def run(self, info, **kwargs):
         info = copy.deepcopy(info)
         compute_resource = self.cloud.resources['compute']
-        for instance_id, instance in info['instances'].items():
+        for instance_id, instance in list(info['instances'].items()):
             LOG.debug("Stop VM '%s' (%s) on %s", instance['instance']['name'],
                       instance_id, self.cloud.position)
             compute_resource.processing_instances.append(instance_id)

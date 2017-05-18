@@ -19,6 +19,7 @@ from cloudferry.lib.os.identity import keystone
 from cloudferry.lib.os.network import neutron
 from cloudferry.lib.utils import log
 from cloudferry.lib.utils import utils
+from functools import reduce
 
 
 LOG = log.getLogger(__name__)
@@ -97,7 +98,7 @@ class Grouping(object):
                        self.compute.get_instances_list())
         for instance in search_list:
             LOG.info('Processing instance %s', instance.name)
-            for network_ips in instance.networks.values():
+            for network_ips in list(instance.networks.values()):
                 network = neutron.get_network_from_list(
                     ip=network_ips[0],
                     tenant_id=instance.tenant_id,
@@ -112,14 +113,14 @@ class Grouping(object):
         return groups
 
     def _make_users_group(self, static_group, validate):
-        vms = self.group_config.values()
+        vms = list(self.group_config.values())
         user_defined_vms = reduce(lambda res, x: x + res, vms, [])
 
         if validate:
             user_defined_vms = [vm for vm in user_defined_vms
                                 if self.compute.is_nova_instance(vm)]
             # remove duplicates
-            for user_group, vms_list in self.group_config.items():
+            for user_group, vms_list in list(self.group_config.items()):
                 self.group_config[user_group] = [vm for vm in set(vms_list)
                                                  if vm in user_defined_vms]
 
@@ -128,7 +129,7 @@ class Grouping(object):
         static_group.update(self.group_config)
 
     def _walk(self, groups, nested_func):
-        for key, value in groups.items():
+        for key, value in list(groups.items()):
             if isinstance(value, dict):
                 self._walk(value, nested_func)
             else:
@@ -140,7 +141,7 @@ class Grouping(object):
                 groups[key] = nested_func(value)
 
     def _walk_user_defined(self, groups, user_vms):
-        for value in groups.values():
+        for value in list(groups.values()):
             if isinstance(value, dict):
                 self._walk_user_defined(value, user_vms)
             else:

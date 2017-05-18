@@ -77,7 +77,7 @@ class LiveMigration(action.Action):
     """
 
     def run(self, info=None, **kwargs):
-        new_id, instance = info[utils.INSTANCES_TYPE].items()[0]
+        new_id, instance = list(info[utils.INSTANCES_TYPE].items())[0]
         old_id = instance['old_id']
 
         dst_compute = self.dst_cloud.resources[utils.COMPUTE_RESOURCE]
@@ -164,7 +164,7 @@ class UpdateInstancesAutoIncrement(action.Action):
       - Write access to nova DB on destination
     """
     def run(self, info=None, **kwargs):
-        instance_id = info[utils.INSTANCES_TYPE].keys()[0]
+        instance_id = list(info[utils.INSTANCES_TYPE].keys())[0]
         mysql_id = self.src_cloud.resources[utils.COMPUTE_RESOURCE].\
             get_instance_sql_id_by_uuid(instance_id)
         self.dst_cloud.resources[
@@ -246,7 +246,7 @@ class CheckNovaInstancesTable(action.Action):
 
         def get_instance_ids(mysql):
             get_ids = "select id from nova.instances where deleted = 0"
-            return set([row.values()[0]
+            return set([list(row.values())[0]
                         for row in mysql.execute(get_ids).fetchall()])
 
         src_ids = get_instance_ids(src_mysql)

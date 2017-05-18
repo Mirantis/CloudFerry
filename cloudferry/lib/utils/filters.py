@@ -77,10 +77,8 @@ class FilterYaml(object):
         return volumes.get('date')
 
 
-class CFFilters(object):
+class CFFilters(object, metaclass=abc.ABCMeta):
     """Base class for filter methods"""
-
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, filter_yaml):
         """

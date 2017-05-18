@@ -37,7 +37,7 @@ class GetInfoImages(action.Action):
         images_info = image_resource.read_info(**search_opts)
         if self.cfg.migrate.ignore_empty_images:
             ids_for_removing = []
-            for (image_id, image) in images_info['images'].items():
+            for (image_id, image) in list(images_info['images'].items()):
                 if image['image']['size'] == 0:
                     ids_for_removing.append(image_id)
             for image_id in ids_for_removing:

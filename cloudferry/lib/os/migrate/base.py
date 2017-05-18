@@ -46,7 +46,7 @@ class AbortMigration(Exception):
             return '{} % {}'.format(repr(self.args[0]), repr(self.args[1:]))
 
 
-class MigrationFlowFactory(object):
+class MigrationFlowFactory(object, metaclass=abc.ABCMeta):
     """
     Base class for migration task flow factories. Class deriving from
     MigrationFlowFactory should define ``migrated_class`` class attribute
@@ -65,8 +65,6 @@ class MigrationFlowFactory(object):
                     base.RememberMigration(obj),
                 ]
     """
-
-    __metaclass__ = abc.ABCMeta
 
     migrated_class = None
 
@@ -157,13 +155,13 @@ class MigrationTask(task.Task):
         super(MigrationTask, self).revert(*args, **kwargs)
         self.rollback(
             *[self._deserialize(arg) for arg in args],
-            **{key: self._deserialize(value) for key, value in kwargs.items()})
+            **{key: self._deserialize(value) for key, value in list(kwargs.items())})
 
     def _call(self, fn, *args, **kwargs):
         result = fn(
             *[self._deserialize(arg) for arg in args],
             **{key: self._deserialize(value)
-               for key, value in kwargs.items()})
+               for key, value in list(kwargs.items())})
         if isinstance(result, list):
             return [self._serialize(val) for val in result]
         elif isinstance(result, dict):
@@ -249,15 +247,12 @@ class SingletonMigrationTaskMetaclass(abc.ABCMeta):
             mcs, name, parents, dct)
 
 
-class SingletonMigrationTask(MigrationTask):
+class SingletonMigrationTask(MigrationTask, metaclass=SingletonMigrationTaskMetaclass):
     """
     Migration task that execute self.migrate(...) function only once for each
     migration and set of values returned by ``get_singleton_key`` and provides
     destructor object that will be executed in the end of migration.
     """
-
-    # pylint: disable=abstract-method
-    __metaclass__ = SingletonMigrationTaskMetaclass
 
     def __init__(self, config, migration, obj, **kwargs):
         self._is_executed = False
@@ -391,5 +386,5 @@ def add_destructor_task(cfg, migration, graph):
     for node, _ in graph.iter_nodes():
         if node.name == destructor_task.name:
             continue
-        print node
+        print(node)
         graph.link(node, destructor_task)

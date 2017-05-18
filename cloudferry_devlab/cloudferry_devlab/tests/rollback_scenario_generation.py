@@ -46,13 +46,13 @@ class RollbackScenarioGeneration(object):
     @staticmethod
     def _verification(_step):
         if isinstance(_step, dict):
-            if isinstance(_step.values()[0], bool) or \
-                    isinstance(_step.values()[0], list) and \
-                    len(_step.values()[0]) == 1:
+            if isinstance(list(_step.values())[0], bool) or \
+                    isinstance(list(_step.values())[0], list) and \
+                    len(list(_step.values())[0]) == 1:
                 return True
 
     def _get_list_of_tasks(self, search_dict):
-        for _, value in search_dict.iteritems():
+        for _, value in search_dict.items():
             if self._verification(search_dict):
                 self.steps_list.append(search_dict)
             elif isinstance(value, list):
@@ -63,7 +63,7 @@ class RollbackScenarioGeneration(object):
         return self.steps_list
 
     def _insert_break_point(self, search_dict, field):
-        for _, value in search_dict.iteritems():
+        for _, value in search_dict.items():
             if isinstance(value, dict):
                 if self._verification(value):
                     return
@@ -81,7 +81,7 @@ class RollbackScenarioGeneration(object):
 
     def _find_break_point(self, search_dict, field):
         fields_found = []
-        for key, value in search_dict.iteritems():
+        for key, value in search_dict.items():
             if key == field:
                 fields_found.append(value)
             elif isinstance(value, dict):
@@ -99,17 +99,17 @@ class RollbackScenarioGeneration(object):
     def generate_exception_task_in_random_point(self):
         migration_data = self._read_migrationation_file()
         data = None
-        for key, value in migration_data.iteritems():
+        for key, value in migration_data.items():
             if key == 'process':
                 data = {key: value}
         list_of_steps = self._get_list_of_tasks(data)
         random_step = random.choice(list_of_steps)
         self._insert_break_point(data, random_step)
-        print('\n\nBreak point was set after:\n{}, index: {}\n\n'.format(
-            random_step, list_of_steps.index(random_step)))
+        print(('\n\nBreak point was set after:\n{}, index: {}\n\n'.format(
+            random_step, list_of_steps.index(random_step))))
         break_point = self._find_break_point(migration_data,
-                                             self.exception_task.keys()[0])
-        if break_point == self.exception_task.values():
+                                             list(self.exception_task.keys())[0])
+        if break_point == list(self.exception_task.values()):
             self._dump_into_file(self.file_path, migration_data)
         else:
             print('Integration of failure step into migration scenario failed')

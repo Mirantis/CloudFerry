@@ -54,7 +54,7 @@ class RemoteTunnelOptions(object):
                   'local_port': self.port,
                   'local_host': self.host}
         # pylint: disable=not-context-manager
-        with api.remote_tunnel(**{k: v for k, v in kwargs.items()
+        with api.remote_tunnel(**{k: v for k, v in list(kwargs.items())
                                   if v is not None}):
             yield
 

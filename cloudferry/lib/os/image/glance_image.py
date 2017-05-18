@@ -14,8 +14,8 @@
 
 
 import copy
-import httplib
-from itertools import ifilter
+import http.client
+
 import re
 
 from cloudferry.lib.migration import notifiers
@@ -209,7 +209,7 @@ class GlanceImage(image.Image):
 
         if self.cloud.position == 'src':
             for f in self.get_image_filter().get_filters():
-                images = ifilter(f, images)
+                images = filter(f, images)
             images = [i for i in images]
             LOG.info("Filtered images: %s",
                      ", ".join(('%s (%s)' % (i.name, i.id) for i in images)))
@@ -410,7 +410,7 @@ class GlanceImage(image.Image):
         LOG.info("Read images: %s",
                  ", ".join(("{name} ({uuid})".format(name=i['image']['name'],
                                                      uuid=i['image']['id'])
-                            for i in info['images'].itervalues())))
+                            for i in info['images'].values())))
 
         return info
 
@@ -618,7 +618,7 @@ class GlanceImage(image.Image):
                         objects.MigrationObjectType.IMAGE, img,
                         created_image.id)
                 except (exception.ImageDownloadError,
-                        httplib.IncompleteRead,
+                        http.client.IncompleteRead,
                         glance_exceptions.HTTPInternalServerError) as e:
                     LOG.debug(e, exc_info=True)
                     msg = ("Unable to reach image's data due to "
@@ -669,7 +669,7 @@ class GlanceImage(image.Image):
         client = self.glance_client
         existing_members = {m.member_id: m
                             for m in client.image_members.list(image=image_id)}
-        for tenant_name, can_share in image_members.iteritems():
+        for tenant_name, can_share in image_members.items():
             tenant_id = self.identity_client.get_tenant_id_by_name(tenant_name)
             LOG.debug("Deploying image member for image '%s' "
                       "tenant '%s'", image_id, tenant_name)

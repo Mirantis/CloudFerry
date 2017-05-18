@@ -111,7 +111,7 @@ class KeystoneMigrationTests(functional_test.FunctionalTest):
                        if getattr(tenant, "name") !=
                        config.case_sensitivity_test_tenant and
                        getattr(tenant, "name") not in
-                       config.mapped_tenant_dict.keys()]
+                       list(config.mapped_tenant_dict.keys())]
 
         self.validate_resource_parameter_in_dst(src_tenants, dst_tenants,
                                                 resource_name='tenant',

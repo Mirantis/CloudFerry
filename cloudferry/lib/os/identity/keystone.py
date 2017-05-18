@@ -628,7 +628,7 @@ class KeystoneIdentity(identity.Identity):
                     if (actor_id, project_id) not in res_tmp:
                         res_tmp[(actor_id, project_id)] = {'roles': []}
                     res_tmp[(actor_id, project_id)]['roles'].append(role_id)
-                for k, v in res_tmp.iteritems():
+                for k, v in res_tmp.items():
                     res.append((k[0], k[1], str(v)))
         except ProgrammingError as e:
             LOG.warn(e.message)

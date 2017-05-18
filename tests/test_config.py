@@ -191,7 +191,7 @@ class OpenstackCloudTestCase(ConfigTestCase):
                              username='root',
                              password='secret',
                              database=key[:-3])
-        for model_class, discoverer in cloud.discoverers.items():
+        for model_class, discoverer in list(cloud.discoverers.items()):
             self.assertIs(model_class, discoverer.discovered_class)
             self.assertTrue(issubclass(discoverer, discover.Discoverer))
 

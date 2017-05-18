@@ -21,9 +21,7 @@ from cloudferry.lib.migration.objects import get_obj_id
 LOG = logging.getLogger(__name__)
 
 
-class MigrationObserver(object):
-    __metaclass__ = abc.ABCMeta
-
+class MigrationObserver(object, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def set_dst_uuid(self, object_type, src_uuid, dst_uuid):
         pass
@@ -131,7 +129,7 @@ class MigrationObserverReporter(object):
                    'Info')
         data = []
         for i, object_type in enumerate(self.observer.storage, start=1):
-            migrated_objs = self.observer.storage[object_type].values()
+            migrated_objs = list(self.observer.storage[object_type].values())
             for j, obj in enumerate(migrated_objs, start=1):
                 index = ".".join([str(i), str(j)])
                 d = (index, obj.object_type, obj.name(),

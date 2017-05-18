@@ -16,6 +16,7 @@ import logging
 import sys
 import time
 from functools import wraps
+import collections
 
 LOG = logging.getLogger(__name__)
 
@@ -133,7 +134,7 @@ class Retry(object):
             return auto_message
 
     def handle_predicate(self, retval):
-        if self.predicate and callable(self.predicate):
+        if self.predicate and isinstance(self.predicate, collections.Callable):
             if self.predicate_retval_as_arg:
                 args = [retval]
             else:
@@ -187,7 +188,7 @@ class Retry(object):
 
         if self.raise_error and failing:
             if self.reraise_original_exception and last_exception is not None:
-                raise last_exception[0], last_exception[1], last_exception[2]
+                raise last_exception[0](last_exception[1]).with_traceback(last_exception[2])
             else:
                 if stop_retrying == self.timedout:
                     raise TimeoutExceeded("Max timeout exceeded")

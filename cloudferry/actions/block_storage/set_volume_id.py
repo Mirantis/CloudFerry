@@ -27,7 +27,7 @@ class SetVolumeId(action.Action):
 
     def run(self, info=None, **kwargs):
         info = copy.deepcopy(info)
-        for instance in info['instances'].values():
+        for instance in list(info['instances'].values()):
             meta_volume_array = []
             for volume in instance['instance']['volumes']:
                 meta_volume_array.append({'volume': volume})

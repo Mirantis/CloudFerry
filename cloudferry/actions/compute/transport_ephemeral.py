@@ -48,7 +48,7 @@ class TransportEphemeral(action.Action):
             }
         }
 
-        for instance_id, instance in info[utils.INSTANCES_TYPE].items():
+        for instance_id, instance in list(info[utils.INSTANCES_TYPE].items()):
             is_ephemeral = instance[utils.INSTANCE_BODY]['is_ephemeral']
             one_instance = {
                 utils.INSTANCES_TYPE: {
@@ -90,7 +90,7 @@ class TransportEphemeral(action.Action):
 
     @staticmethod
     def rebase_diff(dst_cloud, info):
-        for obj in info[utils.INSTANCES_TYPE].values():
+        for obj in list(info[utils.INSTANCES_TYPE].values()):
             image_id = obj['instance']['image_id']
             new_backing_file = hashlib.sha1(image_id).hexdigest()
             diff = obj['diff']

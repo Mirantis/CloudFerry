@@ -180,7 +180,7 @@ class RemoteStdout(object):
         if self.stderr:
             self.stderr.close()
         if all((exc_type, exc_val, exc_tb)):
-            raise exc_type, exc_val, exc_tb
+            raise exc_type(exc_val).with_traceback(exc_tb)
 
 
 class grant_all_permissions(object):

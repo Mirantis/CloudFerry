@@ -38,7 +38,7 @@ def os_cli_cmd(config, client, *args):
     if config.region:
         opts["--os-region-name"] = config.region
 
-    client_opts = " ".join([" ".join([k, v]) for k, v in opts.iteritems()])
+    client_opts = " ".join([" ".join([k, v]) for k, v in opts.items()])
     arguments = " ".join(args)
 
     cmd = "{client} {options} {arguments}".format(
